@@ -14,6 +14,7 @@ import { APIResponse } from '../interfaces/apiResponse.interface';
 import { APP_CONFIG, AppConfig } from '../services/config-service.service';
 import { appConfig } from '../app.config';
 import { HelperFormSummaryComponent } from '../helper-form-summary/helper-form-summary.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
 	selector: 'app-helper-edit-form',
 	standalone: true,
@@ -27,7 +28,7 @@ export class HelperEditFormComponent implements OnInit {
 
 	isLinear = false
 
-	constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private helperService: HelperService, private router: Router, @Inject(APP_CONFIG) private appConfig: AppConfig) {
+	constructor(private formBuilder: FormBuilder, private route: ActivatedRoute, private helperService: HelperService, private router: Router, @Inject(APP_CONFIG) private appConfig: AppConfig, private snackBar: MatSnackBar) {
 
 	}
 
@@ -143,15 +144,23 @@ export class HelperEditFormComponent implements OnInit {
 
 		console.log(this.helperEditForm.value)
 		// console.log(this.helperEditForm.controls["languages"] as FormArray)
-		alert(JSON.stringify(this.helperEditForm.value))
+		// alert(JSON.stringify(this.helperEditForm.value))
 
 		// this.helperEditForm.reset()
 		this.helperService.updateHelper(this.helperId, this.helperEditForm.value).subscribe({
 
 			next: (response: APIResponse<Helper>) => {
 				if(response.success) {
-					alert("User updated succesfully")
+					// alert("User updated succesfully")
 					this.router.navigate(["/dashboard", "staff-management", "helpers"])
+					
+					this.snackBar.open(`Helper updated successfully`, "Close", {
+						duration: 5000,
+						panelClass: ["success-snackbar"],
+						horizontalPosition: "right",
+						verticalPosition: "top"
+					})
+
 				}
 				else {
 					alert("Failed to update user")

@@ -8,6 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { QrCodeDialogComponent } from '../qr-code-dialog/qr-code-dialog.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { MatIconModule } from '@angular/material/icon';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../confirm-dialog/confirm-dialog.component';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 @Component({
 	selector: 'app-helper-detailed-view',
 	standalone: true,
@@ -40,7 +42,7 @@ export class HelperDetailedViewComponent implements OnInit {
 
 	@Input({required: true}) helper!: Helper
 
-	constructor(private helperService: HelperService, @Inject(APP_CONFIG) private appConfig: AppConfig, private dialog: MatDialog) {
+	constructor(private helperService: HelperService, @Inject(APP_CONFIG) private appConfig: AppConfig, private dialog: MatDialog, private snackBar: MatSnackBar) {
 		// this.helper.createdAt = this.helper.createdAt || new Date().toLocaleString()
 	}
 
@@ -52,16 +54,41 @@ export class HelperDetailedViewComponent implements OnInit {
 
 	handleDelete(_id: string) {
 		console.log(`Delete called for mongo id: ${_id}`)
-		this.helperService.deleteHelperById(_id).subscribe({
-			next: (data) => {
-				console.log(`Inside delete subscribe next: ${JSON.stringify(data, null, 4)}`)
-			},
-			
-			error: (err) => {
-				console.log(`Inside delete subscribe error: ${(err as Error).message}`)
 
+		let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+			width: "400px",
+			data: {
+				title: "Confirm Delete",
+				message: "Are you sure you want to delete this item?",
+				confirmText: "Delete",
+				cancelText: "Cancel"
+			} as ConfirmDialogData
+		})
+
+		dialogRef.afterClosed().subscribe((res) => {
+			if(res === true) {
+				this.helperService.deleteHelperById(_id).subscribe({
+					next: (data) => {
+						console.log(`Inside delete subscribe next: ${JSON.stringify(data, null, 4)}`)
+						this.snackBar.open("Helper deleted successfully", "Close", {
+							duration: 5000,
+							horizontalPosition: "right",
+							verticalPosition: "top",
+							panelClass: ["success-snackbar"],
+
+
+						} as MatSnackBarConfig)
+					},
+					
+					error: (err) => {
+						console.log(`Inside delete subscribe error: ${(err as Error).message}`)
+
+					}
+				})
 			}
 		})
+
+
 	}
 
 	showQr() {

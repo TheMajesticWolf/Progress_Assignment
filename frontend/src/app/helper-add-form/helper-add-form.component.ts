@@ -15,6 +15,7 @@ import { APIResponse } from '../interfaces/apiResponse.interface';
 import { APP_CONFIG, AppConfig } from '../services/config-service.service';
 import { HelperFormSummaryComponent } from '../helper-form-summary/helper-form-summary.component';
 import { QRCodeModule } from 'angularx-qrcode';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
 	selector: 'app-helper-add-form',
 	standalone: true,
@@ -28,7 +29,7 @@ export class HelperAddFormComponent implements OnInit {
 
 	isLinear = false
 
-	constructor(private formBuilder: FormBuilder, private helperService: HelperService, private router: Router, @Inject(APP_CONFIG) private appConfig: AppConfig, private dialog: MatDialog) {
+	constructor(private formBuilder: FormBuilder, private helperService: HelperService, private router: Router, @Inject(APP_CONFIG) private appConfig: AppConfig, private dialog: MatDialog, private snackBar: MatSnackBar) {
 
 	}
 	
@@ -140,14 +141,14 @@ export class HelperAddFormComponent implements OnInit {
 
 		console.log(this.helperAddForm.value)
 		// console.log(this.helperAddForm.controls["languages"] as FormArray)
-		alert(JSON.stringify(this.helperAddForm.value))
+		// alert(JSON.stringify(this.helperAddForm.value))
 
 		this.helperService.addHelper(this.helperAddForm.value).subscribe({
 			next: (response: APIResponse<Helper>) => {
 				console.log(`Added new helper: ${JSON.stringify(response.data, null, 4)}`)
 
 				if(response.success) {
-					alert("User added successfully")
+					// alert("User added successfully")
 					this.dialog.open(QrCodeDialogComponent, {
 						data: {
 							qrData: JSON.stringify(response.data, null, 4) || 'No-ID',
@@ -155,6 +156,12 @@ export class HelperAddFormComponent implements OnInit {
 						}
 					})
 					this.router.navigate(["/dashboard", "staff-management", "helpers"])
+					this.snackBar.open(`Helper added successfully`, "Close", {
+						duration: 5000,
+						panelClass: ["success-snackbar"],
+						horizontalPosition: "right",
+						verticalPosition: "top"
+					})
 				}
 
 			},

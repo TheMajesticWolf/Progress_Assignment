@@ -231,6 +231,22 @@ export class HelperEditFormComponent implements OnInit {
 			})
 			kycGroup.get('document')?.markAsTouched();
 			kycGroup.get('document')?.updateValueAndValidity();
+
+			let formData = new FormData()
+			formData.append("kycDoc", file)
+
+			this.helperService.uploadKYCDoc(formData).subscribe({
+				next: (response) => {
+					kycGroup.patchValue({
+						document: response.data
+					})
+					// alert(`KYC DOC UPLOADED: ${JSON.stringify(response.data, null, 4)}`)
+				},
+
+				error: (err) => {
+					console.log(`Failed to upload KYC Document: ${(err as Error).message}`)
+				}
+			})
 		}
 	}
 

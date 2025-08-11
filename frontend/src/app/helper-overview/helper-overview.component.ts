@@ -20,7 +20,7 @@ export class HelperOverviewComponent {
 
 	selectedHelper!: Helper;
 
-	sortBy = "joiningTime"
+	sortBy = "updateTime"
 	searchText = ""
 	isAscending = false
 	filteredHelpers: Helper[] = []
@@ -106,7 +106,7 @@ export class HelperOverviewComponent {
 		else if(this.sortBy === "employeeId") {
 			this.filteredHelpers = [...this.filteredHelpers].sort((a, b) =>   (a.empCode ?? '').localeCompare(b.empCode ?? '', undefined, { sensitivity: 'base' }));
 		}
-		else if(this.sortBy === "joiningTime") {
+		else if(this.sortBy === "updateTime") {
 			this.filteredHelpers = [...this.filteredHelpers].sort((a, b) =>   new Date(a?.updatedAt ?? '').getTime() - new Date(b?.updatedAt ?? '').getTime());
 		}
 		this.filteredHelpers = this.isAscending ? this.filteredHelpers : [...this.filteredHelpers].reverse()

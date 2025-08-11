@@ -1,0 +1,94 @@
+# Angular build output
+frontend/dist/
+frontend/tmp/
+frontend/out-tsc/
+frontend/bazel-out/
+
+# Node modules
+frontend/node_modules/
+frontend/npm-debug.log
+frontend/yarn-error.log
+
+# IDEs and editors
+frontend/.idea/
+frontend/.project
+frontend/.classpath
+frontend/.c9/
+frontend/*.launch
+frontend/.settings/
+frontend/*.sublime-workspace
+
+# VS Code settings (allow safe project config)
+# frontend/.vscode/
+# !frontend/.vscode/settings.json
+# !frontend/.vscode/tasks.json
+# !frontend/.vscode/launch.json
+# !frontend/.vscode/extensions.json
+
+# Local history (VS Code extensions)
+frontend/.history/
+
+# Angular CLI & test logs
+frontend/.angular/cache/
+frontend/coverage/
+frontend/testem.log
+
+# Misc (only include if you know you use these)
+# frontend/libpeerconnection.log
+# frontend/connect.lock
+
+# System files (should be global ignore)
+frontend/.DS_Store
+frontend/Thumbs.db
+
+
+notes.txt
+
+backend/node_modules
+backend/.env
+backend/test.py
+backend/uploads
+backend/dist
+
+# # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+
+# # Compiled output
+# frontend/dist
+# frontend/tmp
+# frontend/out-tsc
+# frontend/bazel-out
+
+# # Node
+# frontend/node_modules
+# frontend/npm-debug.log
+# frontend/yarn-error.log
+
+# # IDEs and editors
+# frontend/.idea/
+# frontend/.project
+# frontend/.classpath
+# frontend/.c9/
+# frontend/*.launch
+# frontend/.settings/
+# frontend/*.sublime-workspace
+
+# # Visual Studio Code
+# frontend/.vscode/*
+# !frontend/.vscode/settings.json
+# !frontend/.vscode/tasks.json
+# !frontend/.vscode/launch.json
+# !frontend/.vscode/extensions.json
+# frontend/.history/*
+
+# # Miscellaneous
+# frontend/.angular/cache
+# frontend/.sass-cache/
+# frontend/connect.lock
+# frontend/coverage
+# frontend/libpeerconnection.log
+# frontend/testem.log
+# frontend/typings
+
+# # System files
+# frontend/.DS_Store
+# frontend/Thumbs.db

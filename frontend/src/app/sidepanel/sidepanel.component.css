@@ -1,0 +1,113 @@
+.sidepanel {
+	/* border: 1px solid red; */
+	/* position: fixed; */
+	/* width: 15vw; */
+	height: 100%;
+	padding: 10px;
+	background-color: #dfdfdf;
+
+
+	/* overflow-y: auto; */
+	/* scrollbar-gutter: stable; */
+	overflow: hidden;
+	
+
+	display: flex;
+	flex-direction: column;
+
+	/* justify-content: space-between; */
+	
+}
+
+.logo-search-container {
+	margin-bottom: 30px;
+	font-size: 1.25rem;
+}
+
+.services-container {
+	overflow-y: auto;
+	scrollbar-gutter: stable both-sides;}
+
+.logo-box {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.search-box {
+	/* background-color: red; */
+}
+
+.search-box input {
+	width: 100%;
+	background: transparent;
+	outline: none;
+	border: none;
+	border-bottom: 1px solid purple;
+	border: 1px solid purple;
+
+	padding: 5px;
+	border-radius: 10px;
+
+	font-size: 1.0125rem;
+
+}
+
+
+.services-box {
+	flex: 1;
+	overflow-y: auto;
+	scrollbar-gutter: stable both-sides;
+
+}
+
+
+.menu-group h5 {
+	cursor: pointer;
+	padding: 5px 8px 5px 8px;
+	background-color: #c9c5c5;
+	margin: 0;
+	
+	margin: 10px 0px 10px 0px;
+	border-radius: 10px;
+
+	font-size: 1.030rem;
+}
+
+.menu-item {
+  /* padding-left: 16px; */
+  margin-bottom: 5px;
+
+}
+
+.menu-group-separator {
+	width: 100%;
+	height: 1px;
+	background-color: black;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.menu-item button {
+	width: 100%;
+	background: transparent;
+	outline: none;
+	/* border: 1px solid black; */
+	border: none;
+	border-radius: 8px;
+	cursor: pointer;
+	/* color: transparent; */
+	text-align: left;
+
+	padding: 2px 6px 2px 6px;
+
+	font-size: 0.95rem;
+}
+
+.menu-item button:hover {
+	background-color: rgba(153, 93, 255, 0.195);
+	color: rgb(93, 0, 255);
+}
+
+

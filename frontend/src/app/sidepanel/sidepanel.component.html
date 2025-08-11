@@ -1,0 +1,58 @@
+<div class="sidepanel">
+
+	<div class="logo-search-container">
+
+		<div class="logo-box">
+			<div class="logo-container">
+				<!-- <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/BMW.svg" alt="Logo" width="50px"> -->
+				<img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="Logo" width="50px">
+			</div>
+			<div class="logo-text">
+				<h5>Manage</h5>
+				<h6>By ASBL Homes</h6>
+			</div>
+	
+		</div>
+	
+		<div class="search-box">
+			<input type="text" placeholder="Search">
+			<!-- <input type="text" placeholder=" Search"> -->
+		</div>
+
+	</div>	
+
+	<div class="services-container">
+		
+		<div class="services-box">
+	
+	
+			@for (service of services; track service; let index = $index; let even = $even; let odd=$odd) {
+			<div class="menu-group">
+				<h5 (click)="toggleExpand(index)">{{service.category}} <span style="float: right">{{ service.expanded ? '-'
+						: '+' }}</span></h5>
+	
+				@if(service.expanded) {
+	
+				@for (child of services[index].children; track $index) {
+				<div class="menu-item">
+					<button [routerLink]="child.path" >{{child.label}}</button>
+				</div>
+				}
+	
+				}
+			</div>
+	
+			<div class="menu-group-separator">
+	
+			</div>
+	
+			}
+	
+	
+		</div>
+
+	</div>
+
+
+
+</div>

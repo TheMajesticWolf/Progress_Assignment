@@ -1,0 +1,85 @@
+<div class="helper-details">
+
+	<div class="general-info-box">
+
+		<div class="details">
+
+			<div class="photo-box">
+				@if(helper.photoUrl.length !== 0) {
+					<img [src]="BACKEND + helper.photoUrl" alt="Logo" width="70px" height="70px">
+				}
+				@else {
+					<img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="Logo" width="50px" height="50px">
+				}
+			</div>
+	
+			<div class="info-box">
+				<h4>{{helper.fullName}}</h4>
+				<span>{{helper.typeOfService}}</span>
+			</div>
+
+		</div>
+
+		<div class="buttons-box">
+			<button [routerLink]="['/dashboard', 'staff-management', 'helpers', 'edit-helper', helper._id]">Edit</button>
+			<button (click)="handleDelete(helper._id)">Delete</button>
+		</div>
+
+	</div>
+
+	<div class="employee-id-box details-box-util">
+		<h5>EMPLOYEE ID</h5>
+		<div class="row">
+			<p><b>Identitification Card</b></p>
+			<!-- <p>{{helper.identificationCard || "Unassigned"}}</p> -->
+			<p mat-icon-button (click)="showQr()" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">View <mat-icon>visibility</mat-icon></p>
+		</div>
+		<div class="row">
+			<p><b>Employee Code</b></p>
+			<p>{{helper.empCode || "Unassigned"}}</p>
+		</div>
+	</div>
+	
+	<div class="personal-details-box details-box-util">
+		<h5>PERSONAL DETAILS</h5>
+		<div class="row">
+			<p><b>Gender</b></p>
+			<p>{{helper.gender}}</p>
+		</div>
+		<div class="row">
+			<p><b>Language(s)</b></p>
+			<p>{{helper.languages}}</p>
+		</div>
+		<div class="row">
+			<p><b>Mobile No.</b></p>
+			<p>{{helper.phone}}</p>
+		</div>
+		<div class="row">
+			<p><b>Email ID</b></p>
+			<p>{{helper.email}}</p>
+		</div>
+		<div class="row">
+			<p><b>KYC Document</b></p>
+			<p mat-icon-button (click)="showKycDoc()" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">{{helper.kycDetails.documentType}} <mat-icon>visibility</mat-icon></p>
+		</div>
+		
+	</div>
+	
+	<div class="service-details-box details-box-util">
+		<h5>SERVICE DETAILS</h5>
+		<div class="row">
+			<p><b>Type</b></p>
+			<p>{{helper.typeOfService}}</p>
+		</div>
+		<div class="row">
+			<p><b>Organisation</b></p>
+			<p>{{helper.organisationName}}</p>
+		</div>
+		<div class="row">
+			<p><b>Joined On</b></p>
+			<p>{{helper.createdAt | date :"yyyy/MM/dd - HH:mm:ss"}}</p>
+		</div>
+
+	</div>
+
+</div>

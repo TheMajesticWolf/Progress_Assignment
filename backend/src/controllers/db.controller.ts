@@ -3,6 +3,18 @@ import HelperModel from "../models/Helper.model.js"
 import type { Helper } from "../interfaces/helper.interface.js"
 import multer from 'multer'
 import path from "path"
+import fs from 'fs'
+
+const uploadsPath = path.resolve('./uploads');
+const profilePicsPath = path.join(uploadsPath, 'profile-pics');
+const kycDocsPath = path.join(uploadsPath, 'kyc-docs');
+
+[uploadsPath, profilePicsPath, kycDocsPath].forEach(dir => {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true })
+  }
+});
+
 
 const storageProfilePics = multer.diskStorage({
 	destination: (req, file, cb) => {

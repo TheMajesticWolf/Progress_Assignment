@@ -62,6 +62,12 @@
 			<p><b>KYC Document</b></p>
 			<p mat-icon-button (click)="showKycDoc()" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">{{helper.kycDetails.documentType}} <mat-icon>visibility</mat-icon></p>
 		</div>
+		<div class="row">
+			<p><b>Additional Document(s)</b></p>
+			@for (doc of helper.additionalDocs; track $index) {
+				<p mat-icon-button (click)="showAdditionalDoc(doc)" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">Document {{$index}} <mat-icon>visibility</mat-icon></p>
+			}
+		</div>
 		
 	</div>
 	

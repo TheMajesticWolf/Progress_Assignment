@@ -8,8 +8,9 @@ import fs from 'fs'
 const uploadsPath = path.resolve('./uploads');
 const profilePicsPath = path.join(uploadsPath, 'profile-pics');
 const kycDocsPath = path.join(uploadsPath, 'kyc-docs');
+const additionalDocsPath = path.join(uploadsPath, 'additional-docs');
 
-[uploadsPath, profilePicsPath, kycDocsPath].forEach(dir => {
+[uploadsPath, profilePicsPath, kycDocsPath, additionalDocsPath].forEach(dir => {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true })
   }
@@ -35,12 +36,25 @@ const storageKyc = multer.diskStorage({
 	},
 });
 
+const storageAdditionalDoc = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, './uploads/additional-docs');
+	},
+	filename: (req, file, cb) => {
+		cb(null, Date.now() + path.extname(file.originalname));
+	},
+});
+
 const uploadProfilePics = multer({
 	storage: storageProfilePics,
 })
 
 const uploadKyc = multer({
 	storage: storageKyc,
+})
+
+const uploadAdditional = multer({
+	storage: storageAdditionalDoc
 })
 
 export let testAPI = (req: Request, res: Response) => {
@@ -183,3 +197,19 @@ export let uploadKYCDoc = async (req: Request, res: Response) => {
 }
 
 export let uploadKYCDocMiddleware = uploadKyc.single('kycDoc');
+
+
+export let uploadAdditionalDoc = async (req: Request, res: Response) => {
+
+	let file = req.file
+	
+	// console.log(req)
+	if(file) {
+		console.log(file)
+		res.status(200).json({success: true, data: `/uploads/additional-docs/${file.filename}`})
+	}
+
+}
+
+export let uploadAdditionalDocMiddleware = uploadAdditional.single('additionalDoc');
+

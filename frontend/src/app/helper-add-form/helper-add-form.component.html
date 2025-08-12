@@ -208,9 +208,14 @@
 				<div class="step-component">
 					<div class="row hidden-file-input">
 						<h6 class="label-title">Additional Document Upload</h6>
-						<input type="file" #additionalDocs placeholder="Upload additional document(s)" (change)="onImageFilePick($event)">
+						<input type="file" #additionalDocs placeholder="Upload additional document(s)" (change)="onAdditionalDocsPick($event)">
 						<div id="upload-kyc-square-box" (click)="additionalDocs.click()">
-							+
+							@if(helperAddForm.value.step_1.additionalDocs.length != 0) {	
+								<p style="font-size: 10px; text-align: center;">{{helperAddForm.value.step_1.additionalDocs}}</p>
+							}
+							@else {
+								+
+							}
 						</div>
 					</div>
 				</div>

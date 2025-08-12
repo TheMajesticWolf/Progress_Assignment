@@ -106,4 +106,10 @@ export class HelperDetailedViewComponent implements OnInit {
 		window.open(url, '_blank');
 	}
 
+	showAdditionalDoc(doc: string) {
+		let url = `${this.BACKEND}${doc}`
+		console.log(url)
+		window.open(url, '_blank');
+	}
+
 }

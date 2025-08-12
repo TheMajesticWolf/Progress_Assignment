@@ -84,6 +84,10 @@ const helperSchema = new mongoose.Schema<HelperDocument>({
 		required: true
 	},
 
+	additionalDocs: [
+		{type: String}
+	]
+
 }, { timestamps: true })
 
 helperSchema.pre("validate", async function (next) {

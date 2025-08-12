@@ -79,6 +79,7 @@ export class HelperService {
 
 	transformFormData(formData: any): Partial<Helper> {
 		let step0 = formData?.step_0
+		let step1 = formData?.step_1
 
 		return {
 			typeOfService: step0?.typeOfService,
@@ -94,7 +95,8 @@ export class HelperService {
 			kycDetails: {
 				document: step0?.kycDetails?.document,
 				documentType: step0?.kycDetails?.documentType
-			}
+			},
+			additionalDocs: step1?.additionalDocs
 		}
 	}
 
@@ -106,6 +108,10 @@ export class HelperService {
 
 	uploadKYCDoc(formData: FormData) {
 		return this.http.post<APIResponse<string>>(`${this.BACKEND}/upload-kyc-doc`, formData)
+	}
+
+	uploadAdditionalDoc(formData: FormData) {
+		return this.http.post<APIResponse<string>>(`${this.BACKEND}/upload-additional-doc`, formData)
 	}
 }
 

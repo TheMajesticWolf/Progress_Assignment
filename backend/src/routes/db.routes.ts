@@ -1,5 +1,5 @@
 import express from 'express'
-import { testAPI, getHelpers, addHelper, getHelperById, deleteHelperById, updateHelperById, uploadProfilePic, uploadProfilePicMiddleware, uploadKYCDoc, uploadKYCDocMiddleware } from '../controllers/db.controller.js';
+import { testAPI, getHelpers, addHelper, getHelperById, deleteHelperById, updateHelperById, uploadProfilePic, uploadProfilePicMiddleware, uploadKYCDoc, uploadKYCDocMiddleware, uploadAdditionalDoc, uploadAdditionalDocMiddleware } from '../controllers/db.controller.js';
 
 const router = express.Router();
 
@@ -14,5 +14,6 @@ router.put("/helpers/:_id", updateHelperById)
 
 router.post("/upload-profile-pic", uploadProfilePicMiddleware, uploadProfilePic)
 router.post("/upload-kyc-doc", uploadKYCDocMiddleware, uploadKYCDoc)
+router.post("/upload-additional-doc", uploadAdditionalDocMiddleware, uploadAdditionalDoc)
 
 export default router

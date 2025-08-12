@@ -239,13 +239,39 @@ export class HelperAddFormComponent implements OnInit {
 
 
 	onAdditionalDocsPick(event: Event) {
+		// let element = event.target as HTMLInputElement
+		// // console.log(element.files?.item(0))
+
+		// this.helperAddForm.patchValue({
+		// 	kycDetails: {
+		// 		...this.helperAddForm.value.kycDetails,
+		// 		document: element.files?.item(0)?.name
+		// 	}
+		// })
 		let element = event.target as HTMLInputElement
 		// console.log(element.files?.item(0))
+		
+		let formData = new FormData()
+		const file = element.files?.item(0);
+		if(file) {
+			formData.append("additionalDoc", file)
+		}
+		console.log(formData.get("additionalDoc"))
 
-		this.helperAddForm.patchValue({
-			kycDetails: {
-				...this.helperAddForm.value.kycDetails,
-				document: element.files?.item(0)?.name
+		this.helperService.uploadAdditionalDoc(formData).subscribe({
+			next: (response) => {
+				console.log(response)
+				this.helperAddForm.patchValue({
+					step_1: {
+						additionalDocs: [response.data]
+					}
+				})
+				// console.log(this.helperAddForm.value)
+				this.updateHelper()
+			},
+
+			error: (err) => {
+				console.log(`Failed to upload profile photo: ${(err as Error).message}`)
 			}
 		})
 	}

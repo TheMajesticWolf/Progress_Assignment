@@ -1,10 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 
 @Component({
 	selector: 'app-sidepanel',
 	standalone: true,
-	imports: [RouterLink, RouterModule],
+	imports: [RouterLink, RouterModule, CommonModule],
 	templateUrl: './sidepanel.component.html',
 	styleUrl: './sidepanel.component.css',
 	changeDetection: ChangeDetectionStrategy.OnPush
@@ -96,18 +97,63 @@ export class SidepanelComponent implements OnInit {
 		},
 	]
 
+	filteredServices: any = []
+
 	constructor(private router: Router) {
 
 	}
 
 	ngOnInit(): void {
-		
+		this.filteredServices = [...this.services]
+		// this.isActive(this.router.url)		
 	}
 
 	toggleExpand(index: number) {
-		this.services = this.services.map((ele: any, idx: any) => (
+		this.filteredServices = this.filteredServices.map((ele: any, idx: any) => (
 			idx == index ? {...ele, expanded: !ele.expanded} : ele
 		))
 	}
+
+	handleChange(event: Event) {
+		let e = (event.target as HTMLInputElement)
+		console.log(e.value)
+		this.filteredServices = this.services.filter((ele: any) => {
+
+			let flag = false;
+
+			if(ele.category.toLowerCase().includes(e.value.toLowerCase())) {
+				flag = true;
+			}
+
+
+			for(let child of ele.children) {
+				if(child.label.toLowerCase().includes(e.value.toLowerCase())) {
+					flag = true;
+					// break
+				}
+			}
+			
+			return flag;
+
+		})
+
+		this.filteredServices = this.filteredServices.map((ele: any) => {
+			return {
+				...ele,
+				expanded: true
+			}
+		})
+
+		if(this.filteredServices.length > 0) {
+			// this.router.navigateByUrl(this.filteredServices[0].children[0].path)
+
+		}
+	}
+
+	// isActive(path: string) {
+	// 	console.log(path)
+	// 	console.log(this.router.url)
+	// 	return this.router.url.includes(path)
+	// }
 
 }

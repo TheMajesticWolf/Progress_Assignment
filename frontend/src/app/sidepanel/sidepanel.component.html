@@ -15,7 +15,7 @@
 		</div>
 	
 		<div class="search-box">
-			<input type="text" placeholder="Search">
+			<input type="text" placeholder="Search" (input)="handleChange($event)">
 			<!-- <input type="text" placeholder=" Search"> -->
 		</div>
 
@@ -26,15 +26,15 @@
 		<div class="services-box">
 	
 	
-			@for (service of services; track service; let index = $index; let even = $even; let odd=$odd) {
+			@for (service of filteredServices; track service; let index = $index; let even = $even; let odd=$odd) {
 			<div class="menu-group">
 				<h5 (click)="toggleExpand(index)">{{service.category}} <span style="float: right">{{ service.expanded ? '-'
 						: '+' }}</span></h5>
 	
 				@if(service.expanded) {
 	
-				@for (child of services[index].children; track $index) {
-				<div class="menu-item">
+				@for (child of filteredServices[index].children; track $index) {
+				<div class="menu-item" [routerLink]="child.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
 					<button [routerLink]="child.path" >{{child.label}}</button>
 				</div>
 				}

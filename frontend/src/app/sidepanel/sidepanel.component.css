@@ -110,4 +110,9 @@
 	color: rgb(93, 0, 255);
 }
 
+.menu-item.active button {
+	background-color: rgba(181, 138, 255, 0.195);
+	color: rgb(93, 0, 255);	
+}
+
 

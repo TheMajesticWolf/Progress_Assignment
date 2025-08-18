@@ -57,10 +57,15 @@
 			<p><b>Organisation</b></p>
 			<p>{{helper.organisationName}}</p>
 		</div>
-		<div class="row">
-			<p><b>Additional docs</b></p>
-			<p>{{helper.additionalDocs}}</p>
-		</div>
+
+		<!-- {{helper.additionalDocs | json}} -->
+		@if(helper.additionalDocs?.length != 0) {
+			<div class="row">
+				<p><b>Additional Document(s)</b></p>
+					<p mat-icon-button (click)="showAdditionalDoc(helper.additionalDocs)" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">Document<mat-icon>visibility</mat-icon></p>
+					<!-- <p>Doc is '{{doc}}'</p> -->
+			</div>
+		}
 
 	</div>
 

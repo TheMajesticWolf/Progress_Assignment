@@ -16,10 +16,11 @@ import { APP_CONFIG, AppConfig } from '../services/config-service.service';
 import { HelperFormSummaryComponent } from '../helper-form-summary/helper-form-summary.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatIcon } from '@angular/material/icon';
 @Component({
 	selector: 'app-helper-add-form',
 	standalone: true,
-	imports: [QRCodeModule, ReactiveFormsModule, JsonPipe, RouterLink, MatInputModule, MatFormFieldModule, MatStepperModule, MatButtonModule, HelperFormSummaryComponent],
+	imports: [QRCodeModule, ReactiveFormsModule, JsonPipe, RouterLink, MatInputModule, MatFormFieldModule, MatStepperModule, MatButtonModule, HelperFormSummaryComponent, MatIcon],
 	templateUrl: './helper-add-form.component.html',
 	styleUrl: './helper-add-form.component.css'
 })
@@ -134,7 +135,7 @@ export class HelperAddFormComponent implements OnInit {
 
 		if (step0.invalid || step1.invalid) {
 			alert("Fill correct information");
-			this.languages.clear()
+			// this.languages.clear()
 			return;
 		}
 
@@ -197,6 +198,7 @@ export class HelperAddFormComponent implements OnInit {
 						photoUrl: response.data
 					}
 				})
+				this.updateHelper()
 			},
 
 			error: (err) => {
@@ -227,6 +229,7 @@ export class HelperAddFormComponent implements OnInit {
 					kycGroup.patchValue({
 						document: response.data
 					})
+					this.updateHelper()
 					// alert(`KYC DOC UPLOADED: ${JSON.stringify(response.data, null, 4)}`)
 				},
 
@@ -263,7 +266,7 @@ export class HelperAddFormComponent implements OnInit {
 				console.log(response)
 				this.helperAddForm.patchValue({
 					step_1: {
-						additionalDocs: [response.data]
+						additionalDocs: response.data
 					}
 				})
 				// console.log(this.helperAddForm.value)
@@ -297,6 +300,14 @@ export class HelperAddFormComponent implements OnInit {
 		console.log(e)
 		this.step = e.selectedIndex
 
+	}
+
+	showKycDoc(doc: string | undefined) {
+		if(doc == undefined) return
+		
+		let url = `${this.BACKEND}${doc}`
+		console.log(url)
+		window.open(url, '_blank');
 	}
 
 }

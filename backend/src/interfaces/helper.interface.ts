@@ -49,5 +49,5 @@ export interface Helper {
 	vehicleType: VehicleType
 	vehicleNumber?: string
 	kycDetails: KYCDetails
-	additionalDocs: string[]
+	additionalDocs: string
 }

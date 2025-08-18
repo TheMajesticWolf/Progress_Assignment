@@ -54,20 +54,25 @@
 			<p><b>Mobile No.</b></p>
 			<p>{{helper.phone}}</p>
 		</div>
-		<div class="row">
-			<p><b>Email ID</b></p>
-			<p>{{helper.email}}</p>
-		</div>
+
+		@if(helper.email.length != 0) {
+			<div class="row">
+				<p><b>Email ID</b></p>
+				<p>{{helper.email}}</p>
+			</div>
+		}
 		<div class="row">
 			<p><b>KYC Document</b></p>
 			<p mat-icon-button (click)="showKycDoc()" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">{{helper.kycDetails.documentType}} <mat-icon>visibility</mat-icon></p>
 		</div>
-		<div class="row">
-			<p><b>Additional Document(s)</b></p>
-			@for (doc of helper.additionalDocs; track $index) {
-				<p mat-icon-button (click)="showAdditionalDoc(doc)" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">Document {{$index}} <mat-icon>visibility</mat-icon></p>
-			}
-		</div>
+
+		<!-- <p>Here '{{helper.additionalDocs | json}}' {{helper.additionalDocs?.length}}</p> -->
+		@if(helper && helper.additionalDocs && helper.additionalDocs.length != 0) {
+			<div class="row">
+				<p><b>Additional Document(s)</b></p>
+				<p mat-icon-button (click)="showAdditionalDoc(helper.additionalDocs)" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">Document<mat-icon>visibility</mat-icon></p>
+			</div>
+		}
 		
 	</div>
 	

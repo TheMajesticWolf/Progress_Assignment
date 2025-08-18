@@ -84,9 +84,9 @@ const helperSchema = new mongoose.Schema<HelperDocument>({
 		required: true
 	},
 
-	additionalDocs: [
-		{type: String}
-	]
+	additionalDocs: {
+		type: String
+	}
 
 }, { timestamps: true })
 

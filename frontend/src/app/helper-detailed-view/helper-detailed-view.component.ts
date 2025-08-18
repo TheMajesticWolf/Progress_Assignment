@@ -1,6 +1,6 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { Helper, Gender, VehicleType, DocumentType, TypeOfService } from '../interfaces/helper.interface';
-import { DatePipe } from '@angular/common';
+import { DatePipe, JsonPipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { HelperService } from '../services/helper.service';
 import { APP_CONFIG, AppConfig } from '../services/config-service.service';
@@ -13,7 +13,7 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 @Component({
 	selector: 'app-helper-detailed-view',
 	standalone: true,
-	imports: [DatePipe, RouterModule, MatIconModule],
+	imports: [DatePipe, RouterModule, MatIconModule, JsonPipe],
 	templateUrl: './helper-detailed-view.component.html',
 	styleUrl: './helper-detailed-view.component.css'
 })
@@ -106,7 +106,8 @@ export class HelperDetailedViewComponent implements OnInit {
 		window.open(url, '_blank');
 	}
 
-	showAdditionalDoc(doc: string) {
+	showAdditionalDoc(doc: string | undefined) {
+		if(doc == undefined) return
 		let url = `${this.BACKEND}${doc}`
 		console.log(url)
 		window.open(url, '_blank');

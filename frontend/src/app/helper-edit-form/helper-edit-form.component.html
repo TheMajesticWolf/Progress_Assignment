@@ -166,6 +166,10 @@
 							<div id="upload-kyc-square-box" (click)="kycInput.click()">
 								<p style="font-size: 10px; text-align: center;">{{helperEditForm.value.step_0.kycDetails.document}}</p>
 							</div>
+							@if(helper.kycDetails?.document?.length != 0) {		
+								<p mat-icon-button (click)="showKycDoc(helper.kycDetails?.document)" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">Document<mat-icon>visibility</mat-icon></p>
+								<!-- <p>Doc is '{{doc}}'</p> -->
+							}
 							<!-- @if(helperEditForm.get('step_0.kycDetails.document')?.touched && helperEditForm.get('step_0.kycDetails.document')?.invalid) {	
 								<div class="error-box">
 									@if(helperEditForm.get('step_0.kycDetails.document')?.hasError('required')) {

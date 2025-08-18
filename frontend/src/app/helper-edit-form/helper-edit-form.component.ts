@@ -15,10 +15,11 @@ import { APP_CONFIG, AppConfig } from '../services/config-service.service';
 import { appConfig } from '../app.config';
 import { HelperFormSummaryComponent } from '../helper-form-summary/helper-form-summary.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatIcon } from '@angular/material/icon';
 @Component({
 	selector: 'app-helper-edit-form',
 	standalone: true,
-	imports: [ReactiveFormsModule, JsonPipe, RouterLink, MatInputModule, MatFormFieldModule, MatStepperModule, MatButtonModule, HelperFormSummaryComponent],
+	imports: [ReactiveFormsModule, JsonPipe, RouterLink, MatInputModule, MatFormFieldModule, MatStepperModule, MatButtonModule, HelperFormSummaryComponent, MatIcon],
 	templateUrl: './helper-edit-form.component.html',
 	styleUrl: './helper-edit-form.component.css'
 })
@@ -220,6 +221,7 @@ export class HelperEditFormComponent implements OnInit {
 						photoUrl: response.data
 					}
 				})
+				this.updateHelper()
 			},
 
 			error: (err) => {
@@ -235,9 +237,6 @@ export class HelperEditFormComponent implements OnInit {
 		const file = element.files?.item(0);
 		const kycGroup = this.helperEditForm.get('step_0.kycDetails') as FormGroup;
 		if (file) {
-			kycGroup.patchValue({
-			document: file.name
-			})
 			kycGroup.get('document')?.markAsTouched();
 			kycGroup.get('document')?.updateValueAndValidity();
 
@@ -249,6 +248,7 @@ export class HelperEditFormComponent implements OnInit {
 					kycGroup.patchValue({
 						document: response.data
 					})
+					this.updateHelper()
 					// alert(`KYC DOC UPLOADED: ${JSON.stringify(response.data, null, 4)}`)
 				},
 
@@ -297,5 +297,12 @@ export class HelperEditFormComponent implements OnInit {
 
 	}
 
+	showKycDoc(doc: string | undefined) {
+		if(doc == undefined) return
+		
+		let url = `${this.BACKEND}${doc}`
+		console.log(url)
+		window.open(url, '_blank');
+	}
 
 }

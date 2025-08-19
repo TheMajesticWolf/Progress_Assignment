@@ -40,7 +40,7 @@ export class HelperDetailedViewComponent implements OnInit {
 	// 	},
 	// }
 
-	@Input({required: true}) helper!: Helper
+	@Input({ required: true }) helper!: Helper
 
 	constructor(private helperService: HelperService, @Inject(APP_CONFIG) private appConfig: AppConfig, private dialog: MatDialog, private snackBar: MatSnackBar) {
 		// this.helper.createdAt = this.helper.createdAt || new Date().toLocaleString()
@@ -49,7 +49,7 @@ export class HelperDetailedViewComponent implements OnInit {
 	BACKEND = `${this.appConfig.backendUrl}:${this.appConfig.port}`
 
 	ngOnInit(): void {
-		
+
 	}
 
 	handleDelete(_id: string) {
@@ -61,32 +61,37 @@ export class HelperDetailedViewComponent implements OnInit {
 				title: "Confirm Delete",
 				message: "Are you sure you want to delete this item?",
 				confirmText: "Delete",
-				cancelText: "Cancel"
+				cancelText: "Cancel",
+				onCancel: () => {
+					this.snackBar.open("Delete operation cancelled", "Close", {
+						duration: 5000,
+						horizontalPosition: "right",
+						verticalPosition: "top",
+						panelClass: ["failure-snackbar"],
+					} as MatSnackBarConfig)
+				},
+				onConfirm: () => {
+					this.helperService.deleteHelperById(_id).subscribe({
+						next: (data) => {
+							console.log(`Inside delete subscribe next: ${JSON.stringify(data, null, 4)}`)
+							this.snackBar.open("Helper deleted successfully", "Close", {
+								duration: 5000,
+								horizontalPosition: "right",
+								verticalPosition: "top",
+								panelClass: ["success-snackbar"],
+							} as MatSnackBarConfig)
+						},
+
+						error: (err) => {
+							console.log(`Inside delete subscribe error: ${(err as Error).message}`)
+
+						}
+					})
+				},
 			} as ConfirmDialogData
 		})
 
-		dialogRef.afterClosed().subscribe((res) => {
-			if(res === true) {
-				this.helperService.deleteHelperById(_id).subscribe({
-					next: (data) => {
-						console.log(`Inside delete subscribe next: ${JSON.stringify(data, null, 4)}`)
-						this.snackBar.open("Helper deleted successfully", "Close", {
-							duration: 5000,
-							horizontalPosition: "right",
-							verticalPosition: "top",
-							panelClass: ["success-snackbar"],
-
-
-						} as MatSnackBarConfig)
-					},
-					
-					error: (err) => {
-						console.log(`Inside delete subscribe error: ${(err as Error).message}`)
-
-					}
-				})
-			}
-		})
+		dialogRef.afterClosed().subscribe((confirmStatus: boolean) => {})
 
 
 	}
@@ -107,7 +112,7 @@ export class HelperDetailedViewComponent implements OnInit {
 	}
 
 	showAdditionalDoc(doc: string | undefined) {
-		if(doc == undefined) return
+		if (doc == undefined) return
 		let url = `${this.BACKEND}${doc}`
 		console.log(url)
 		window.open(url, '_blank');

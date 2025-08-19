@@ -6,10 +6,10 @@
 	</mat-dialog-content>
 	
 	<mat-dialog-actions align="end">
-		<button class="cancel-btn" #cancelBtn mat-button (click)="dialogRef.close(false)">
+		<button class="cancel-btn" #cancelBtn mat-button (click)="onFailure()">
 			{{ data.cancelText || 'Cancel' }}
 		</button>
-		<button class="delete-btn" mat-raised-button color="warn" (click)="dialogRef.close(true)">
+		<button class="delete-btn" mat-raised-button color="warn" (click)="onSuccess()">
 			{{ data.confirmText || 'Confirm' }}
 		</button>
 	</mat-dialog-actions>

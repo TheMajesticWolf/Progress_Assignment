@@ -14,6 +14,15 @@ export class ConfirmDialogComponent {
 
 	}
 
+	onSuccess() {
+		this.data.onConfirm?.()
+		this.dialogRef.close(true)
+	}
+
+	onFailure() {
+		this.data.onCancel?.()
+		this.dialogRef.close(false)
+	}
 
 
 }
@@ -24,4 +33,6 @@ export interface ConfirmDialogData {
 	message: string;
 	confirmText?: string;
 	cancelText?: string;
+	onConfirm?: () => void;
+	onCancel?: () => void;
 }

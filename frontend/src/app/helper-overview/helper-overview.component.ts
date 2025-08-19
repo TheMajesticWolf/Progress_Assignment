@@ -5,18 +5,147 @@ import { Gender, Helper, TypeOfService, VehicleType, DocumentType } from '../int
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HelperService } from '../services/helper.service';
+import { AsyncPipe, JsonPipe } from '@angular/common';
+import { PaginationParams } from '../interfaces/paginationParams.interface';
 
 
 @Component({
 	selector: 'app-helper-overview',
 	standalone: true,
-	imports: [HelperCardComponent, HelperDetailedViewComponent, RouterModule, FormsModule],
+	imports: [HelperCardComponent, HelperDetailedViewComponent, RouterModule, FormsModule, AsyncPipe, JsonPipe],
 	templateUrl: './helper-overview.component.html',
 	styleUrl: './helper-overview.component.css'
 })
 export class HelperOverviewComponent {
 	helpers: Helper[] = []
-	addingHelper: boolean = false
+
+	selectedHelper!: Helper;
+
+	sortBy = "updatedAt"
+	searchText = ""
+	isAscending = false
+	filteredHelpers: Helper[] = []
+
+	filterByJob = "all"
+
+	page = 1
+	limit = 5
+
+	helpers$ = this.helperService.helpers$
+
+	typeOfService = TypeOfService
+
+	originalLen!: number
+
+	
+	onFilterChange() {
+		this.loadHelpers()
+	}
+
+	constructor(private helperService: HelperService) {
+
+	}
+
+	ngOnInit(): void {
+
+		this.helpers$.subscribe((data) => {
+
+			if(!this.selectedHelper) {
+				this.originalLen = data.length
+			}
+
+			if(data.length > 0) {
+				this.selectedHelper = data[0]
+			}
+		})
+		
+		this.loadHelpers()
+
+	}
+
+	loadHelpers(isFresh = true) {
+		
+		let params: PaginationParams = {
+			page: this.page,
+			limit: this.limit,
+			sortBy: this.sortBy,
+			isAscending: this.isAscending,
+			search: this.searchText,
+			filterByJob: this.filterByJob
+		}
+
+		console.log(`Fetching using params = ${JSON.stringify(params)}`)
+		this.helperService.getHelpersPaginated(params).subscribe()
+	}
+
+
+	onHelperSelect(helepr: Helper) {
+		// console.log(helepr)
+		this.selectedHelper = helepr
+	}
+
+	sortHelpers() {
+		this.loadHelpers()
+	}
+
+	filterHelpers() {
+		let filterString = this.searchText.trim().toLowerCase()
+		this.loadHelpers()
+	}
+
+	downloadHelpers() {
+		// const json = JSON.stringify(this.helpers, null, 4)
+		// const blob = new Blob([json], { type: "application/json" });
+
+		this.helperService.downloadHelpers().subscribe({
+			next: (blob) => {
+				const url = URL.createObjectURL(blob)
+				const a = document.createElement("a")
+				a.href = url;
+				a.download = "helpers.csv"
+				a.style.display = "none"
+				document.body.appendChild(a)
+				a.click();
+				document.body.removeChild(a)
+				URL.revokeObjectURL(url)
+			},
+
+			error: (err) => {
+				console.error(`Error downloading helpers`)
+			}
+		})
+
+
+	}
+
+	reverseList() {
+		this.isAscending = !this.isAscending
+		this.loadHelpers()
+	}
+}
+
+
+
+/*
+import { Component } from '@angular/core';
+import { HelperCardComponent } from '../helper-card/helper-card.component';
+import { HelperDetailedViewComponent } from '../helper-detailed-view/helper-detailed-view.component';
+import { Gender, Helper, TypeOfService, VehicleType, DocumentType } from '../interfaces/helper.interface';
+import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { HelperService } from '../services/helper.service';
+import { AsyncPipe, JsonPipe } from '@angular/common';
+
+
+@Component({
+	selector: 'app-helper-overview',
+	standalone: true,
+	imports: [HelperCardComponent, HelperDetailedViewComponent, RouterModule, FormsModule, AsyncPipe, JsonPipe],
+	templateUrl: './helper-overview.component.html',
+	styleUrl: './helper-overview.component.css'
+})
+export class HelperOverviewComponent {
+	helpers: Helper[] = []
 
 	selectedHelper!: Helper;
 
@@ -26,8 +155,17 @@ export class HelperOverviewComponent {
 	filteredHelpers: Helper[] = []
 
 	filterByJob = "all"
+
+	page = 1
+	limit = 5
+
+	helpers$ = this.helperService.helpers$
 	
 	onFilterChange() {
+		
+		this.loadHelpers()
+		return
+		
 		this.filteredHelpers = this.helpers.filter(h => {
 			return this.filterByJob === "all" || h.typeOfService === this.filterByJob
 		})
@@ -39,57 +177,42 @@ export class HelperOverviewComponent {
 	}
 
 	ngOnInit(): void {
-		let temp: Helper[] = []
 
-		
-		for (let i = 0; i < 10; i++) {
-			let helper: Helper = {
-				empCode: `${Math.round(1000 + (Math.random() * 1000))}`,
-				_id: `${Math.round(1000000 + (Math.random() * 1000000))}`,
-				identificationCard: "Testing",
-				// createdAt?: string,
-				// updatedAt?: string,
-
-				photoUrl: "https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg",
-				typeOfService: TypeOfService.Driver,
-				organisationName: "Organanisation name",
-				fullName: `Name ${Math.round(1000 + (Math.random() * 1000))}`,
-				languages: ["English", "Hindi", "Telugu"],
-				gender: Gender.Male,
-				phone: `${Math.round(Math.random() * 1e10)}`,
-				email: "email@dummy.com",
-				vehicleType: VehicleType.Bike,
-				vehicleNumber: "TS08AB0123",
-				kycDetails: {
-					document: "Passport",
-					documentType: DocumentType.Aadhaar
-				},
-			}
-			temp.push(helper)
-		}
-		
-		this.helperService.helpers$.subscribe((data) => {
-			this.helpers = data
-			this.filteredHelpers = this.helpers
+		// this.helperService.helpers$.subscribe((data) => {
+		// 	this.helpers = data
+		// 	this.filteredHelpers = this.helpers
 			
-			this.sortHelpers()
-			console.log("HERE 6868")
-			this.selectedHelper = this.filteredHelpers[0]
+		// 	this.sortHelpers()
+		// 	this.selectedHelper = this.filteredHelpers[0]
+		// })
+
+		// this.loadHelpers()
+
+		this.helpers$.subscribe((data) => {
+			// this.helpers = data
+			// this.filteredHelpers = this.helpers
+			this.selectedHelper = data[0]
 		})
-
+		
+		this.loadHelpers()
 
 
 
 
 	}
 
-	startAdd() {
-		this.addingHelper = true
+	loadHelpers(isFresh = true) {
+
+		this.helperService.getHelpersPaginated({
+			page: this.page,
+			limit: this.limit,
+			sortBy: this.sortBy,
+			isAscending: this.isAscending,
+			search: this.searchText,
+			filterByJob: this.filterByJob
+		}).subscribe()
 	}
 
-	stopAdd() {
-		this.addingHelper = false
-	}
 
 	onHelperSelect(helepr: Helper) {
 		console.log(helepr)
@@ -99,6 +222,10 @@ export class HelperOverviewComponent {
 	sortHelpers() {
 		// this.helpers = [...this.helpers].sort((a, b) => a.phone - b.phone)
 		// this.helpers = [...this.helpers].sort((a, b) => a.phone.localeCompare(b.phone, undefined, { sensitivity: 'base' }));
+		
+		
+		this.loadHelpers()
+		return
 		
 		if(this.sortBy === "name") {
 			this.filteredHelpers = [...this.filteredHelpers].sort((a, b) => a.fullName.localeCompare(b.fullName, undefined, { sensitivity: 'base' }));
@@ -117,6 +244,11 @@ export class HelperOverviewComponent {
 	filterHelpers() {
 		let filterString = this.searchText.trim().toLowerCase()
 		console.log("Filter helper input changed")
+		this.loadHelpers()
+		return
+		
+		// let filterString = this.searchText.trim().toLowerCase()
+		console.log("Filter helper input changed")
 		this.filteredHelpers = this.helpers.filter(h => {
 			
 			let condition = h.fullName.toLowerCase().includes(filterString) ||
@@ -131,24 +263,41 @@ export class HelperOverviewComponent {
 	}
 
 	downloadHelpers() {
-		const json = JSON.stringify(this.helpers, null, 4)
-		const blob = new Blob([json], { type: "application/json" });
-		const url = URL.createObjectURL(blob)
+		// const json = JSON.stringify(this.helpers, null, 4)
+		// const blob = new Blob([json], { type: "application/json" });
 
-		const a = document.createElement("a")
-		a.href = url;
-		a.download = "helpers.json"
-		a.style.display = "none"
-		document.body.appendChild(a)
-		a.click();
-		document.body.removeChild(a)
-		URL.revokeObjectURL(url)
+		this.helperService.downloadHelpers().subscribe({
+			next: (blob) => {
+				const url = URL.createObjectURL(blob)
+				const a = document.createElement("a")
+				a.href = url;
+				a.download = "helpers.csv"
+				a.style.display = "none"
+				document.body.appendChild(a)
+				a.click();
+				document.body.removeChild(a)
+				URL.revokeObjectURL(url)
+			},
+
+			error: (err) => {
+				console.error(`Error downloading helpers`)
+			}
+		})
+
+
 	}
 
 	reverseList() {
 		// this.filteredHelpers = [...this.filteredHelpers].reverse()
 		// this.selectedHelper = this.filteredHelpers[0]
+		
+		this.isAscending = !this.isAscending
+		this.loadHelpers()
+		return
+		
 		this.isAscending = !this.isAscending
 		this.sortHelpers()
 	}
 }
+
+*/

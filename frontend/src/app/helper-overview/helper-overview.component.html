@@ -13,28 +13,27 @@
 			<!-- <button (click)="sortHelpers()">Sort</button> -->
 
 			<select [(ngModel)]="sortBy" (change)="sortHelpers()">
-				<option value="updateTime">Update Time</option>
-				<option value="name">Helper Names</option>
-				<option value="employeeId">Employee ID</option>
+				<option value="updatedAt">Update Time</option>
+				<option value="fullName">Helper Names</option>
+				<option value="empCode">Employee ID</option>
 			</select>
 			
 			<select [(ngModel)]="filterByJob" (change)="onFilterChange()">
 				<option value="all">All</option>
-				<option value="Driver">Driver</option>
-				<option value="Cook">Cook</option>
-				<option value="Maid">Maid</option>
+				<option [value]="typeOfService.Driver">Driver</option>
+				<option [value]="typeOfService.Cook">Cook</option>
+				<option [value]="typeOfService.Maid">Maid</option>
 			</select>
 
 			<button (click)="reverseList()">Sort in {{isAscending ? "Descending" : "Ascending"}}</button>
 	
-			<input type="text" placeholder="Name, Employee Id, Phone" (input)="filterHelpers()" [(ngModel)]="searchText">
+			<input type="number" placeholder="Page" (input)="filterHelpers()" [(ngModel)]="page" min="1">
+			<input type="number" placeholder="Limit" (input)="filterHelpers()" [(ngModel)]="limit" min="1">
 			
-			@if(filteredHelpers.length === helpers.length) {
-				<span>{{filteredHelpers.length}} helpers</span>
+			@if(helpers$ | async; as helpers) {
+				<span>{{helpers.length}} helpers</span>
 			}
-			@else {
-				<span>{{filteredHelpers.length}}/{{helpers.length}} results</span>
-			}
+
 	
 		</div>
 	
@@ -49,18 +48,36 @@
 	
 	<div class="scroll-box">
 	
-		<div class="main-box">
-			<div class="helpers-list-box">
-				@for (helper of filteredHelpers; track helpers; let index = $index; let even = $even; let odd = $odd) {
-					<app-helper-card [helper]="helper" (helperSelectEmit)="onHelperSelect($event)" [isSelectedHelper]="selectedHelper.empCode === helper.empCode"></app-helper-card>
+		
+			
+			<div class="main-box">
+
+				<div class="helpers-list-box">
+
+					<div class="filter-box">
+						<input type="text" placeholder="Name, Employee Id, Phone" (input)="filterHelpers()" [(ngModel)]="searchText">
+					</div>
+
+					@for (helper of helpers$ | async; track helpers; let index = $index; let even = $even; let odd = $odd) {
+						<app-helper-card [helper]="helper" (helperSelectEmit)="onHelperSelect($event)" [isSelectedHelper]="selectedHelper.empCode === helper.empCode"></app-helper-card>
+					}
+				</div>
+		
+				@if(selectedHelper) {
+					<div class="helper-detailed-box">
+						<app-helper-detailed-view [helper]="selectedHelper"></app-helper-detailed-view>
+					</div>
 				}
+				
+				@else {
+					<div class="no-helpers-box">
+						<h1>No helpers</h1>
+					</div>
+				}
+					
 			</div>
-	
-			<div class="helper-detailed-box">
-				<app-helper-detailed-view [helper]="selectedHelper"></app-helper-detailed-view>
-			</div>
-	
-		</div>
+				
+				
 	
 	</div>
 </div>

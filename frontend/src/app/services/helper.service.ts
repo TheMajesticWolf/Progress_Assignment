@@ -1,10 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map, tap } from 'rxjs';
 import { Helper } from '../interfaces/helper.interface';
 import { APIResponse } from '../interfaces/apiResponse.interface';
 import { APP_CONFIG, AppConfig } from '../services/config-service.service';
 import { appConfig } from '../app.config';
+import { PaginationParams } from '../interfaces/paginationParams.interface';
 
 
 @Injectable({
@@ -19,7 +20,8 @@ export class HelperService {
 	helpers$ = this.helpersSubject.asObservable()
 
 	constructor(private http: HttpClient, @Inject(APP_CONFIG) private appConfig: AppConfig) {
-		this.getHelpers().subscribe()
+		// this.getHelpers().subscribe()
+		// this.getHelpersPaginated({limit: 10, page: 1} as PaginationParams).subscribe()
 	}
 
 	BACKEND = `${this.appConfig.backendUrl}:${this.appConfig.port}/api/db`
@@ -102,16 +104,41 @@ export class HelperService {
 
 	uploadProfilePic(formData: FormData) {
 
-		return this.http.post<APIResponse<string>>(`${this.BACKEND}/upload-profile-pic`, formData)
+		return this.http.post<APIResponse<string>>(`${this.BACKEND}/uploads/upload-profile-pic`, formData)
 
 	}
 
 	uploadKYCDoc(formData: FormData) {
-		return this.http.post<APIResponse<string>>(`${this.BACKEND}/upload-kyc-doc`, formData)
+		return this.http.post<APIResponse<string>>(`${this.BACKEND}/uploads/upload-kyc-doc`, formData)
 	}
 
 	uploadAdditionalDoc(formData: FormData) {
-		return this.http.post<APIResponse<string>>(`${this.BACKEND}/upload-additional-doc`, formData)
+		return this.http.post<APIResponse<string>>(`${this.BACKEND}/uploads/upload-additional-doc`, formData)
+	}
+
+	downloadHelpers() {
+		return this.http.get(`${this.BACKEND}/paginated`, {
+			responseType: "blob"
+		})
+	}
+
+	getHelpersPaginated(queryParams: PaginationParams): Observable<Helper[]> {
+
+		let params = new HttpParams()
+		params = (queryParams.search && params.append("search", queryParams.search)) || params
+		params = (queryParams.filterByJob && params.append("filterByJob", queryParams.filterByJob)) || params
+		params = (queryParams.sortBy && params.append("sortBy", queryParams.sortBy)) || params
+		params = (queryParams.isAscending != null && params.append("isAscending", queryParams.isAscending)) || params
+		params = (queryParams.page && params.append("page", queryParams.page)) || params
+		params = (queryParams.limit && params.append("limit", queryParams.limit)) || params
+		
+		return this.http.get<APIResponse<Helper[]>>(`${this.BACKEND}/helpers/paginated`, {
+			params: params
+		})
+			.pipe(
+				map(response => {return response.data}),
+				tap(helpers => this.helpersSubject.next(helpers))
+			)
 	}
 }
 

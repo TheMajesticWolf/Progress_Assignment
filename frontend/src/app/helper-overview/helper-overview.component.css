@@ -82,7 +82,8 @@
 .sort-filter-box button,
 .sort-filter-box select,
 .sort-filter-box input,
-.add-helper-box button {
+.add-helper-box button,
+.helpers-list-box input {
 	background: transparent;
 	outline: none;
 	border: 1px solid purple;
@@ -90,4 +91,26 @@
 	padding: 5px;
 	font-size: 0.85rem;
 
+}
+
+.helpers-list-box input {
+	width: 100%;
+}
+
+.no-helpers-box {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+}
+
+.filter-box {
+    /* display: flex;
+    flex-direction: row;
+    justify-content: space-between; */
+    padding: 5px;
+    margin: 10px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.05rem;
 }

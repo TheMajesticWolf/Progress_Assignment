@@ -88,7 +88,9 @@ export class HelperEditFormComponent implements OnInit {
 				this.editedHelper = h
 				this.helperEditForm.patchValue({
 					step_0: h,
-					step_1: {}
+					step_1: {
+						additionalDocs: h.additionalDocs
+					}
 				})
 
 				for(let language of h.languages) {

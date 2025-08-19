@@ -4,6 +4,8 @@ import type { Helper } from "../interfaces/helper.interface.js"
 import multer from 'multer'
 import path from "path"
 import fs from 'fs'
+import { Parser } from 'json2csv'
+import type { SortOrder } from "mongoose"
 
 const uploadsPath = path.resolve('./uploads');
 const profilePicsPath = path.join(uploadsPath, 'profile-pics');
@@ -212,4 +214,86 @@ export let uploadAdditionalDoc = async (req: Request, res: Response) => {
 }
 
 export let uploadAdditionalDocMiddleware = uploadAdditional.single('additionalDoc');
+
+
+export let downloadHelpers = async (req: Request, res: Response) => {
+
+	try {
+		
+		let data = await HelperModel.find({}).lean()
+
+		let parser = new Parser()
+		// let csv = parser.parse(data)
+
+		const rows = data.map(helper => ({
+			EmployeeCode: helper.empCode || '',
+			FullName: helper.fullName,
+			Gender: helper.gender,
+			Phone: helper.phone,
+			Email: helper.email,
+			TypeOfService: helper.typeOfService,
+			Organisation: helper.organisationName,
+			VehicleType: helper.vehicleType,
+			VehicleNumber: helper.vehicleNumber || '',
+			DocumentType: helper.kycDetails?.documentType || '',
+			Document: helper.kycDetails?.document || '',
+			PhotoUrl: helper.photoUrl,
+			AdditionalDocs: helper.additionalDocs
+		}))
+
+		let csv = parser.parse(rows)
+		
+		res.setHeader('Content-Type', 'text/csv')
+		res.setHeader('Content-Disposition', 'attachment; filename="helpers.csv"')
+		res.status(200).send(csv)
+	}
+
+	catch(err) {
+		res.status(500).json({success: false, error: (err as Error).message})
+	}
+
+}
+
+
+
+export let getHelpersPaginated = async (req: Request, res: Response) => {
+
+	let {search, filterByJob, sortBy, isAscending, page, limit} = req.query
+
+	console.log(req.query)
+
+	let startPageNum = parseInt(page as string)
+	let limitNum = parseInt(limit as string)
+
+	// if page num = 12, and if items per page is 3
+	// it means we need to skip first 11 pages i.e 11 * 3 i.e 33 documents
+
+	let amtToskip = (startPageNum - 1) * limitNum
+
+	let filter: any = {}
+
+	if(filterByJob && filterByJob != "all") {
+		filter.typeOfService = filterByJob
+	}
+
+	let sortOrder: SortOrder = isAscending === "true" ? 1 : -1
+	let sortField = (sortBy as string)
+
+	if(search) {
+		filter.$or = [
+			{fullName: {$regex: search, $options: "i"}},
+			{empCode: {$regex: search, $options: "i"}},
+			{phone: {$regex: search, $options: "i"}},
+		]
+	}
+	
+
+	let data = await HelperModel.find(filter)
+	.sort({ [sortField]: sortOrder })
+	.skip(amtToskip)
+	.limit(limitNum)
+
+	res.status(200).json({success: true, len: data.length, data: data})
+
+}
 

@@ -2,7 +2,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import cors from 'cors'
-import router from './routes/db.routes.js'
+import router from './helpers/routes/main.routes.js'
 import path from 'path'
 
 dotenv.config()
@@ -11,7 +11,7 @@ const app = express()
 
 app.use(express.json())
 app.use(cors({
-	origin: ["http://localhost:4200", "http://10.38.45.58:4200", "http://192.168.0.110:4200"],
+	origin: ["http://localhost:4200", "http://10.38.45.58:4200", "http://192.168.0.110:4200", "http://10.164.248.58:4211"],
 }))
 
 app.use('/uploads', express.static("uploads"));

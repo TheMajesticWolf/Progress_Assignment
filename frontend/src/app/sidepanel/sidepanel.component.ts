@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router, RouterLink, RouterModule } from '@angular/router';
+import { NavigationServiceInterface } from '../interfaces/navigationServices.interface';
 
 @Component({
 	selector: 'app-sidepanel',
@@ -12,7 +13,8 @@ import { Router, RouterLink, RouterModule } from '@angular/router';
 })
 export class SidepanelComponent implements OnInit {
 
-	services: any = [
+	// Comment 4
+	services: NavigationServiceInterface[] = [
 		{
 			expanded: false,
 			category: "Resident Management",
@@ -108,10 +110,9 @@ export class SidepanelComponent implements OnInit {
 		// this.isActive(this.router.url)		
 	}
 
-	toggleExpand(index: number) {
-		this.filteredServices = this.filteredServices.map((ele: any, idx: any) => (
-			idx == index ? {...ele, expanded: !ele.expanded} : ele
-		))
+	// Comment 2 and 3
+	toggleExpand(service: NavigationServiceInterface) {
+		service.expanded = !service.expanded
 	}
 
 	handleChange(event: Event) {

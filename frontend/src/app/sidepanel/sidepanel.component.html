@@ -28,12 +28,15 @@
 	
 			@for (service of filteredServices; track service; let index = $index; let even = $even; let odd=$odd) {
 			<div class="menu-group">
-				<h5 (click)="toggleExpand(index)">{{service.category}} <span style="float: right">{{ service.expanded ? '-'
+
+				<!-- Comment 2 -->
+				<h5 (click)="toggleExpand(service)">{{service.category}} <span style="float: right">{{ service.expanded ? '-'
 						: '+' }}</span></h5>
 	
 				@if(service.expanded) {
 	
-				@for (child of filteredServices[index].children; track $index) {
+				<!-- Comment 1 -->
+				@for (child of service.children; track $index) {
 				<div class="menu-item" [routerLink]="child.path" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
 					<button [routerLink]="child.path" >{{child.label}}</button>
 				</div>

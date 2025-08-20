@@ -222,28 +222,65 @@ export let deleteHelperById = async (req: Request, res: Response, next: NextFunc
 
 
 export let updateHelperById = async (req: Request, res: Response, next: NextFunction) => {
-
-	// throw new Error("This is a thrown error for testing")
-	
 	let _id = req.params["_id"]
-	
-	// try {
-		
-		let data = await HelperModel.findByIdAndUpdate(_id, (req.body as Helper), {new: true})
-		
-		if(data) {
-			return res.status(200).json({success: true, data})
-		}
-		res.status(404).json({success: true, error: "Helper does not exist for updation"})
-		
-	// }
-	
-	// catch(err) {
-		// res.status(500).json({success: false, error: (err as Error).message})
-	// }
-	
 
+	console.log("========================================================")
+	console.log(req.body)
+	console.log("++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+	console.log(req.files)
+	console.log("========================================================")
+	
+	let existingHelper = await HelperModel.findById(_id)
+
+	if (!existingHelper) {
+		return res.status(404).json({ success: false, error: "Helper does not exist for update" })
+	}
+
+	let files = req.files as {
+		[key: string]: Express.Multer.File[]
+	}
+
+	let parsedKycDetails: { documentType: string; document: string } = {
+		documentType: "",
+		document: ""
+	};
+
+	if (req.body.kycDetails) {
+		const parsed = JSON.parse(req.body.kycDetails)
+		parsedKycDetails.documentType = parsed.documentType
+		parsedKycDetails.document =
+			files?.["kycDoc"]?.[0]
+				? `/uploads/kyc-docs/${files["kycDoc"][0].filename}`
+				: existingHelper.kycDetails.document 
+	}
+
+	
+	const updatedHelper: Partial<Helper> = {
+		fullName: req.body.fullName || existingHelper.fullName,
+		organisationName: req.body.organisationName || existingHelper.organisationName,
+		phone: req.body.phone || existingHelper.phone,
+		email: req.body.email || existingHelper.email,
+		gender: req.body.gender || existingHelper.gender,
+		typeOfService: req.body.typeOfService || existingHelper.typeOfService,
+		vehicleType: req.body.vehicleType || existingHelper.vehicleType,
+		vehicleNumber: req.body.vehicleNumber || existingHelper.vehicleNumber,
+		languages: req.body.languages || existingHelper.languages,
+		photoUrl: files?.["profilePic"]?.[0]
+			? `/uploads/profile-pics/${files["profilePic"][0].filename}`
+			: existingHelper.photoUrl,
+		additionalDocs: files?.["additionalDoc"]?.[0]
+			? `/uploads/additional-docs/${files["additionalDoc"][0].filename}`
+			: existingHelper.additionalDocs,
+		kycDetails: parsedKycDetails as KYCDetails || existingHelper.kycDetails as KYCDetails
+	}
+
+	
+	const data = await HelperModel.findByIdAndUpdate(_id, updatedHelper, { new: true })
+
+	res.status(200).json({ success: true, data })
+	
 }
+
 
 export let uploadProfilePic = async (req: Request, res: Response, next: NextFunction) => {
 

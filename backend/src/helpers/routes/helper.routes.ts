@@ -17,7 +17,7 @@ router.get("/", asyncHandler(getHelpers))
 router.get("/paginated", asyncHandler(getHelpersPaginated))
 router.get("/download", asyncHandler(downloadHelpers))
 router.post("/", helperUploadMiddleware, asyncHandler(addHelper))
-router.put("/:_id", asyncHandler(updateHelperById))
+router.put("/:_id", helperUploadMiddleware, asyncHandler(updateHelperById))
 router.delete("/:_id", asyncHandler(deleteHelperById))
 router.get("/:_id", asyncHandler(getHelperById))
 

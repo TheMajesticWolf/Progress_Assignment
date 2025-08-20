@@ -53,10 +53,10 @@ export class HelperService {
 			)
 	}
 
-	updateHelper(_id: string, formData: any): Observable<APIResponse<Helper>> {
-		let payload = this.transformFormData(formData)
+	updateHelper(_id: string, formData: FormData): Observable<APIResponse<Helper>> {
+		// let payload = this.transformFormData(formData)
 
-		return this.http.put<APIResponse<Helper>>(`${this.BACKEND}/helpers/${_id}`, payload)
+		return this.http.put<APIResponse<Helper>>(`${this.BACKEND}/helpers/${_id}`, formData)
 			.pipe(
 				map(response => response),
 				tap(updatedHelper => {
@@ -148,6 +148,17 @@ export class HelperService {
 					}
 				})
 			)
+	}
+
+	convertImageUrlToBase64(url: string): Promise<string> {
+		return fetch(url)
+			.then(res => res.blob())
+			.then(blob => new Promise((resolve, reject) => {
+				const reader = new FileReader()
+				reader.onloadend = () => resolve(reader.result as string)
+				reader.onerror = () => reject()
+				reader.readAsDataURL(blob)
+			}))
 	}
 }
 

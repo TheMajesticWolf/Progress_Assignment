@@ -40,7 +40,7 @@
 					<div class="row hidden-file-input">
 						<input type="file" #photoInput accept="image/*" (change)="onImageFilePick($event)">
 						<div id="upload-photo-button-proxy" (click)="photoInput.click()"
-						    [style]="{'background-image': helperEditForm.value.step_0.photoUrl.length !== 0 ? 'url(' + BACKEND + helperEditForm.value.step_0.photoUrl + ')' : 'none'}">
+						    [style]="{'background-image': helperEditForm.value.step_0.photoUrl.length !== 0 ? 'url(' + profilePicPreviewUrl + ')' : 'none'}">
 							<!-- <span class="material-icons md-48">face</span> -->
 							@if(helperEditForm.value.step_0.photoUrl.length != 0) {
 							}
@@ -167,7 +167,8 @@
 								<p style="font-size: 10px; text-align: center;">{{helperEditForm.value.step_0.kycDetails.document}}</p>
 							</div>
 							@if(helper.kycDetails?.document?.length != 0) {		
-								<p mat-icon-button (click)="showKycDoc(helper.kycDetails?.document)" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">Document<mat-icon>visibility</mat-icon></p>
+								<!-- <p mat-icon-button (click)="showKycDoc(helper.kycDetails?.document)" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">Document<mat-icon>visibility</mat-icon></p> -->
+								 <p mat-icon-button><a [href]="kycDocPreviewUrl" target="_blank" class="preview-link">Document<mat-icon>visibility</mat-icon></a></p>
 								<!-- <p>Doc is '{{doc}}'</p> -->
 							}
 							<!-- @if(helperEditForm.get('step_0.kycDetails.document')?.touched && helperEditForm.get('step_0.kycDetails.document')?.invalid) {	
@@ -188,7 +189,7 @@
 			@else if(step == 1) {
 				<div [class]="step == 1 ? 'last-page' : ''" formGroupName="step_1">
 					<h5>Confirm and Submit</h5>
-					<app-helper-form-summary [helper]="helper"></app-helper-form-summary>
+					<app-helper-form-summary [helper]="helper" [profilePicPreviewUrl]="profilePicPreviewUrl"></app-helper-form-summary>
 					<!-- <button type="button" (click)="onSubmit()">Submit</button> -->
 				</div>
 			}

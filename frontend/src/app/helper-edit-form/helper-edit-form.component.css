@@ -197,3 +197,11 @@
 map-stepper .mat-vertical-content-container {
 	color: red;
 }
+
+.preview-link {
+	margin-top: 10px;
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	gap: 10px;
+}

@@ -40,10 +40,10 @@ export class HelperService {
 			.pipe(map(response => response))
 	}
 
-	addHelper(formData: any): Observable<APIResponse<Helper>> {
-		let payload = this.transformFormData(formData)
+	addHelper(formData: FormData): Observable<APIResponse<Helper>> {
+		// let payload = this.transformFormData(formData)
 
-		return this.http.post<APIResponse<Helper>>(`${this.BACKEND}/helpers`, payload)
+		return this.http.post<APIResponse<Helper>>(`${this.BACKEND}/helpers`, formData)
 			.pipe(
 				map(response => response),
 				tap(newHelper => {

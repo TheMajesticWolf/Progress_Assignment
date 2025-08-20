@@ -30,6 +30,17 @@ export class HelperAddFormComponent implements OnInit {
 
 	isLinear = false
 
+	profilePicFile?: File;
+	kycDocFile?: File;
+	additionalDocFile?: File;
+
+	profilePicPreviewUrl?: string
+	kycDocPreviewUrl?: string;
+	additionalDocs?: string;
+
+
+
+
 	constructor(private formBuilder: FormBuilder, private helperService: HelperService, private router: Router, @Inject(APP_CONFIG) private appConfig: AppConfig, private dialog: MatDialog, private snackBar: MatSnackBar) {
 
 	}
@@ -117,12 +128,67 @@ export class HelperAddFormComponent implements OnInit {
 		if(this.step - 1 >= 0) { this.step-- }
 	}
 
+	// onSubmit() {
+
+	// 	console.log(this.helperAddForm)
+
+	// 	this.helperAddForm.markAllAsTouched()
+
+	// 	for(let child of Object.keys(this.helperAddForm.controls)) {
+	// 		if(this.helperAddForm.get(child)?.invalid) {
+	// 			let val = parseInt(child.split("_")[1])
+	// 			this.step = val
+	// 		}
+	// 	}
+
+	// 	const step0 = this.helperAddForm.get("step_0") as FormGroup;
+	// 	const step1 = this.helperAddForm.get("step_1") as FormGroup;
+
+	// 	if (step0.invalid || step1.invalid) {
+	// 		alert("Fill correct information");
+	// 		// this.languages.clear()
+	// 		return;
+	// 	}
+
+
+	// 	console.log(this.helperAddForm.value)
+	// 	// console.log(this.helperAddForm.controls["languages"] as FormArray)
+	// 	// alert(JSON.stringify(this.helperAddForm.value))
+
+	// 	this.helperService.addHelper(this.helperAddForm.value).subscribe({
+	// 		next: (response: APIResponse<Helper>) => {
+	// 			console.log(`Added new helper: ${JSON.stringify(response.data, null, 4)}`)
+
+	// 			if(response.success) {
+	// 				// alert("User added successfully")
+	// 				this.dialog.open(QrCodeDialogComponent, {
+	// 					data: {
+	// 						qrData: JSON.stringify(response.data, null, 4) || 'No-ID',
+	// 						dialogTitle: `QR Code for '${this.helper.fullName}'`
+	// 					}
+	// 				})
+	// 				this.router.navigate(["/dashboard", "staff-management", "helpers"])
+	// 				this.snackBar.open(`Helper added successfully`, "Close", {
+	// 					duration: 5000,
+	// 					panelClass: ["success-snackbar"],
+	// 					horizontalPosition: "right",
+	// 					verticalPosition: "top"
+	// 				})
+	// 			}
+
+	// 		},
+
+	// 		error: (err) => {
+	// 			console.log(`Error adding helper: ${(err as Error).message}`)
+	// 		}
+	// 	})
+
+
+	// }
+
 	onSubmit() {
-
-		console.log(this.helperAddForm)
-
 		this.helperAddForm.markAllAsTouched()
-
+		
 		for(let child of Object.keys(this.helperAddForm.controls)) {
 			if(this.helperAddForm.get(child)?.invalid) {
 				let val = parseInt(child.split("_")[1])
@@ -130,8 +196,20 @@ export class HelperAddFormComponent implements OnInit {
 			}
 		}
 
+		
+		
 		const step0 = this.helperAddForm.get("step_0") as FormGroup;
 		const step1 = this.helperAddForm.get("step_1") as FormGroup;
+
+		console.log("Form Valid:", this.helperAddForm.valid)
+		console.log("Step 0 Valid:", step0.valid)
+		console.log("Step 1 Valid:", step1.valid)
+		console.log("Errors (step 0):", step0.errors)
+		console.log("Errors (step 1):", step1.errors)
+
+		console.log("Photo:", this.helperAddForm.get("step_0.photoUrl")?.value)
+		console.log("KYC Doc:", this.helperAddForm.get("step_0.kycDetails.document")?.value)
+		console.log("Additional Doc:", this.helperAddForm.get("step_1.additionalDocs")?.value)
 
 		if (step0.invalid || step1.invalid) {
 			alert("Fill correct information");
@@ -139,12 +217,53 @@ export class HelperAddFormComponent implements OnInit {
 			return;
 		}
 
+		let formData = new FormData()
 
-		console.log(this.helperAddForm.value)
-		// console.log(this.helperAddForm.controls["languages"] as FormArray)
-		// alert(JSON.stringify(this.helperAddForm.value))
+		this.updateHelper()
 
-		this.helperService.addHelper(this.helperAddForm.value).subscribe({
+		formData.append("fullName", this.helper.fullName ?? "")
+		formData.append("organisationName", this.helper.organisationName ?? "")
+		formData.append("phone", this.helper.phone ?? "")
+		formData.append("email", this.helper.email ?? "")
+		formData.append("gender", this.helper.gender ?? "")
+		formData.append("typeOfService", this.helper.typeOfService ?? "")
+		formData.append("vehicleType", this.helper.vehicleType ?? "")
+		formData.append("vehicleNumber", this.helper.vehicleNumber || "")
+
+		console.log(`Here: ${JSON.stringify(formData, null, 4)}`)
+
+		for (const lang of this.languages.value) {
+			formData.append("languages", lang)
+		}
+
+		formData.append(
+			"kycDetails",
+			JSON.stringify({
+				documentType: step0.value.kycDetails.documentType,
+				document: "" // placeholder, file path handled by backend
+			})
+		)
+
+		// Append files if they exist
+		if (this.profilePicFile) {
+			formData.append("profilePic", this.profilePicFile)
+		}
+
+		if (this.kycDocFile) {
+			formData.append("kycDoc", this.kycDocFile)
+		}
+
+		if (this.additionalDocFile) {
+			formData.append("additionalDoc", this.additionalDocFile)
+		}
+
+		const tempFormData = formData as any;
+		for (const pair of tempFormData.entries()) {
+			console.log(`${pair[0]}:`, pair[1]);
+		}
+		// return
+
+		this.helperService.addHelper(formData).subscribe({
 			next: (response: APIResponse<Helper>) => {
 				console.log(`Added new helper: ${JSON.stringify(response.data, null, 4)}`)
 
@@ -176,107 +295,63 @@ export class HelperAddFormComponent implements OnInit {
 	}
 
 	onImageFilePick(event: Event) {
-		let element = event.target as HTMLInputElement
-		// console.log(element.files?.item(0))
-
-		this.helperAddForm.patchValue({
-			photoUrl: element.files?.item(0)?.name
-		})
-		
-		let formData = new FormData()
-		const file = element.files?.item(0);
-		if(file) {
-			formData.append("profilePic", file)
-		}
-		console.log(formData.get("profilePic"))
-
-		this.helperService.uploadProfilePic(formData).subscribe({
-			next: (response) => {
-				console.log(response)
-				this.helperAddForm.patchValue({
-					step_0: {
-						photoUrl: response.data
-					}
-				})
-				this.updateHelper()
-			},
-
-			error: (err) => {
-				console.log(`Failed to upload profile photo: ${(err as Error).message}`)
-			}
-		})
-
-	}
-	
-	onKYCFilePick(event: Event) {
-		let element = event.target as HTMLInputElement
-		console.log(element.files?.item(0))
-		const file = element.files?.item(0);
-		const kycGroup = this.helperAddForm.get('step_0.kycDetails') as FormGroup;
+		const file = (event.target as HTMLInputElement).files?.[0]
 		if (file) {
-			kycGroup.patchValue({
-			document: file.name
-			})
-			kycGroup.get('document')?.markAsTouched();
-			kycGroup.get('document')?.updateValueAndValidity();
 
+			const reader = new FileReader()
+			reader.onload = () => {
+				this.profilePicPreviewUrl = reader.result as string
+			}
+			reader.readAsDataURL(file)
 
-			let formData = new FormData()
-			formData.append("kycDoc", file)
-
-			this.helperService.uploadKYCDoc(formData).subscribe({
-				next: (response) => {
-					kycGroup.patchValue({
-						document: response.data
-					})
-					this.updateHelper()
-					// alert(`KYC DOC UPLOADED: ${JSON.stringify(response.data, null, 4)}`)
-				},
-
-				error: (err) => {
-					console.log(`Failed to upload KYC Document: ${(err as Error).message}`)
+			this.helperAddForm.patchValue({
+				step_0: {
+					photoUrl: file.name
 				}
 			})
+			this.profilePicFile = file
+			this.helperAddForm.get("step_0.photoUrl")?.setValue(file.name)
+			this.helperAddForm.get("step_0.photoUrl")?.markAsTouched()
+			this.helperAddForm.get("step_0.photoUrl")?.updateValueAndValidity()
+
+			
 		}
 	}
 
+	onKYCFilePick(event: Event) {
+		const file = (event.target as HTMLInputElement).files?.[0]
+		if (file) {
+			
+			const kycGroup = this.helperAddForm.get('step_0.kycDetails') as FormGroup
+			
+			kycGroup.patchValue({
+				document: file.name
+			})
+
+			this.kycDocPreviewUrl = URL.createObjectURL(file)
+
+			kycGroup.get('document')?.markAsTouched()
+			kycGroup.get('document')?.updateValueAndValidity()
+			
+			this.kycDocFile = file
+
+		}
+	}
 
 	onAdditionalDocsPick(event: Event) {
-		// let element = event.target as HTMLInputElement
-		// // console.log(element.files?.item(0))
-
-		// this.helperAddForm.patchValue({
-		// 	kycDetails: {
-		// 		...this.helperAddForm.value.kycDetails,
-		// 		document: element.files?.item(0)?.name
-		// 	}
-		// })
-		let element = event.target as HTMLInputElement
-		// console.log(element.files?.item(0))
-		
-		let formData = new FormData()
-		const file = element.files?.item(0);
-		if(file) {
-			formData.append("additionalDoc", file)
+		const file = (event.target as HTMLInputElement).files?.[0]
+		if (file) {
+			this.helperAddForm.patchValue({
+				step_1: {
+					additionalDocs: file.name
+				}
+			})			
+			this.additionalDocFile = file
+			this.helperAddForm.get("step_1.additionalDocs")?.setValue(file.name)
+			this.helperAddForm.get("step_1.additionalDocs")?.markAsTouched()
+			this.helperAddForm.get("step_1.additionalDocs")?.updateValueAndValidity()
+			
 		}
-		console.log(formData.get("additionalDoc"))
-
-		this.helperService.uploadAdditionalDoc(formData).subscribe({
-			next: (response) => {
-				console.log(response)
-				this.helperAddForm.patchValue({
-					step_1: {
-						additionalDocs: response.data
-					}
-				})
-				// console.log(this.helperAddForm.value)
-				this.updateHelper()
-			},
-
-			error: (err) => {
-				console.log(`Failed to upload profile photo: ${(err as Error).message}`)
-			}
-		})
 	}
 
 	get languages() {

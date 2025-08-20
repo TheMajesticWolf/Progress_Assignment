@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { Helper } from '../interfaces/helper.interface';
 import { DatePipe, JsonPipe } from '@angular/common';
 import { APP_CONFIG, AppConfig } from '../services/config-service.service';
@@ -12,12 +12,17 @@ import { MatIconModule } from '@angular/material/icon';
 	templateUrl: './helper-form-summary.component.html',
 	styleUrl: './helper-form-summary.component.css'
 })
-export class HelperFormSummaryComponent {
+export class HelperFormSummaryComponent implements OnInit {
 
 	@Input() helper!: Partial<Helper>
+	@Input() profilePicPreviewUrl!: string | undefined
 
 	constructor(@Inject(APP_CONFIG) private appConfig: AppConfig) {
 
+	}
+
+	ngOnInit() {
+		console.log(`URL PREVIEW IS: ${this.profilePicPreviewUrl}`)
 	}
 
 	BACKEND = `${this.appConfig.backendUrl}:${this.appConfig.port}`

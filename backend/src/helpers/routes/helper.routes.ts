@@ -6,17 +6,18 @@ import {
 	deleteHelperById,
 	updateHelperById,
 	getHelpersPaginated,
-	downloadHelpers
+	downloadHelpers,
+	helperUploadMiddleware
 } from "../controllers/db.controller.js"
 
 const router = express.Router()
 
 router.get("/", getHelpers)
 router.get("/paginated", getHelpersPaginated)
-router.get("/:_id", getHelperById)
-router.post("/", addHelper)
+router.get("/download", downloadHelpers)
+router.post("/", helperUploadMiddleware, addHelper)
 router.put("/:_id", updateHelperById)
 router.delete("/:_id", deleteHelperById)
-router.get("/download", downloadHelpers)
+router.get("/:_id", getHelperById)
 
 export default router

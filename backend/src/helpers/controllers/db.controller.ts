@@ -1,6 +1,6 @@
 import type { Request, Response } from "express"
 import HelperModel from "../models/Helper.model.js"
-import type { Helper } from "../interfaces/helper.interface.js"
+import type { Helper, KYCDetails } from "../interfaces/helper.interface.js"
 import multer from 'multer'
 import path from "path"
 import fs from 'fs'
@@ -59,6 +59,28 @@ const uploadAdditional = multer({
 	storage: storageAdditionalDoc
 })
 
+
+const storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		if (file.fieldname === "profilePic") cb(null, "uploads/profile-pics/");
+		else if (file.fieldname === "kycDoc") cb(null, "uploads/kyc-docs/");
+		else if (file.fieldname === "additionalDoc") cb(null, "uploads/additional-docs/");
+		else cb(null, "uploads/others/");
+	},
+	filename: (req, file, cb) => {
+		const uniqueName = Date.now() + "-" + Math.round(Math.random() * 1e9) + path.extname(file.originalname);
+		cb(null, uniqueName);
+	},
+});
+
+const upload = multer({ storage }); // ✅ use storage config
+
+export const helperUploadMiddleware = upload.fields([
+	{ name: 'profilePic', maxCount: 1 },
+	{ name: 'kycDoc', maxCount: 1 },
+	{ name: 'additionalDoc', maxCount: 1 }
+])
+
 export let testAPI = (req: Request, res: Response) => {
 	res.send("HEewwfwllo world")
 }
@@ -86,8 +108,64 @@ export let addHelper = async (req: Request, res: Response) => {
 	let helper: Helper = userData as Helper
 
 	try {
+		const files = req.files as {
+			[key: string]: Express.Multer.File[]
+		}
+
+		console.log(req.files)
+
+		// Extract form fields
+		const {
+			fullName,
+			organisationName,
+			phone,
+			email,
+			gender,
+			typeOfService,
+			vehicleType,
+			vehicleNumber,
+			kycDetails,
+			languages
+		} = req.body
+
+		// console.log(req.body)
+
+		let parsedKycDetails: { documentType: DocumentType; document: string };
+		try {
+			const parsed = JSON.parse(kycDetails);
+			parsedKycDetails = {
+				documentType: parsed.documentType,
+				document: files?.["kycDoc"]?.[0]
+					? `/uploads/kyc-docs/${files["kycDoc"][0].filename}`
+					: ""
+			};
+		} catch (err) {
+			return res.status(400).json({ success: false, message: "Invalid kycDetails format" });
+		}
+
+
+		// Construct full helper object
+		const helper = {
+			fullName,
+			organisationName,
+			phone,
+			email,
+			gender,
+			typeOfService,
+			vehicleType,
+			vehicleNumber,
+			languages: Array.isArray(languages) ? languages : [languages],
+			photoUrl: files?.['profilePic']?.[0] ? `/uploads/profile-pics/${files['profilePic'][0].filename}` : "",
+			additionalDocs: files?.['additionalDoc']?.[0] ? `/uploads/additional-docs/${files['additionalDoc'][0].filename}` : "",
+			kycDetails: parsedKycDetails
+		}
+
+		console.log(helper)
+		console.log("*************************************************************")
+
 		
 		let data = await new HelperModel(helper).save()
+		// await HelperModel.findByIdAndDelete(data.id)
 		res.status(201).json({success: true, data})
 		
 	}

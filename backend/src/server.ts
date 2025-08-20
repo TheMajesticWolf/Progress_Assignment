@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import cors from 'cors'
 import router from './helpers/routes/main.routes.js'
 import path from 'path'
+import { errorHandler } from './helpers/middleware/errorHandler.middleware.js'
 
 dotenv.config()
 
@@ -40,3 +41,5 @@ mongoose.connect(MONGO_URI)
 // })
 
 app.use("/api/db", router)
+
+app.use(errorHandler)

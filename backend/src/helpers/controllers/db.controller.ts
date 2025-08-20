@@ -1,4 +1,4 @@
-import type { Request, Response } from "express"
+import type { NextFunction, Request, Response } from "express"
 import HelperModel from "../models/Helper.model.js"
 import type { Helper, KYCDetails } from "../interfaces/helper.interface.js"
 import multer from 'multer'
@@ -73,7 +73,7 @@ const storage = multer.diskStorage({
 	},
 });
 
-const upload = multer({ storage }); // ✅ use storage config
+const upload = multer({ storage }); 
 
 export const helperUploadMiddleware = upload.fields([
 	{ name: 'profilePic', maxCount: 1 },
@@ -81,33 +81,32 @@ export const helperUploadMiddleware = upload.fields([
 	{ name: 'additionalDoc', maxCount: 1 }
 ])
 
-export let testAPI = (req: Request, res: Response) => {
+export let testAPI = (req: Request, res: Response, next: NextFunction) => {
 	res.send("HEewwfwllo world")
 }
 
-export let getHelpers = async (req: Request, res: Response) => {
+export let getHelpers = async (req: Request, res: Response, next: NextFunction) => {
 	
-	try {
+	// try {
 		
 		let data = await HelperModel.find({})
 		res.status(200).json({success: true, data})
 		
-	}
+	// }
 
-	catch(err) {
-		res.status(500).json({success: false, error: (err as Error).message})
-	}
+	// catch(err) {
+		// res.status(500).json({success: false, error: (err as Error).message})
+	// }
 
 	
 }
 
-export let addHelper = async (req: Request, res: Response) => {
+export let addHelper = async (req: Request, res: Response, next: NextFunction) => {
 
 	let userData: Helper = req.body;
 
-	let helper: Helper = userData as Helper
+	let h: Helper = userData as Helper
 
-	try {
 		const files = req.files as {
 			[key: string]: Express.Multer.File[]
 		}
@@ -131,7 +130,7 @@ export let addHelper = async (req: Request, res: Response) => {
 		// console.log(req.body)
 
 		let parsedKycDetails: { documentType: DocumentType; document: string };
-		try {
+		
 			const parsed = JSON.parse(kycDetails);
 			parsedKycDetails = {
 				documentType: parsed.documentType,
@@ -139,9 +138,9 @@ export let addHelper = async (req: Request, res: Response) => {
 					? `/uploads/kyc-docs/${files["kycDoc"][0].filename}`
 					: ""
 			};
-		} catch (err) {
-			return res.status(400).json({ success: false, message: "Invalid kycDetails format" });
-		}
+		
+			
+		
 
 
 		// Construct full helper object
@@ -168,19 +167,16 @@ export let addHelper = async (req: Request, res: Response) => {
 		// await HelperModel.findByIdAndDelete(data.id)
 		res.status(201).json({success: true, data})
 		
-	}
 	
-	catch(err) {
-		res.status(500).json({success: false, error: (err as Error).message})
-	}
+
 	
 }
 
-export let getHelperById = async (req: Request, res: Response) => {
+export let getHelperById = async (req: Request, res: Response, next: NextFunction) => {
 	
 	let _id = req.params["_id"]
 	
-	try {
+	// try {
 		
 		let data = await HelperModel.findById(_id, {}, {})
 
@@ -190,22 +186,22 @@ export let getHelperById = async (req: Request, res: Response) => {
 		
 		res.status(404).json({success: true, error: "Helper does not exist"})
 		
-	}
+	// }
 	
-	catch(err) {
-		res.status(500).json({success: false, error: (err as Error).message})
-	}
+	// catch(err) {
+		// res.status(500).json({success: false, error: (err as Error).message})
+	// }
 	
 	
 	
 }
 
 
-export let deleteHelperById = async (req: Request, res: Response) => {
+export let deleteHelperById = async (req: Request, res: Response, next: NextFunction) => {
 	
 	let _id = req.params["_id"]
 	
-	try {
+	// try {
 		
 		let data = await HelperModel.findByIdAndDelete(_id, {})
 		
@@ -214,24 +210,24 @@ export let deleteHelperById = async (req: Request, res: Response) => {
 		}
 		res.status(404).json({success: true, error: "Helper does not exist for deletion"})
 		
-	}
+	// }
 	
-	catch(err) {
-		res.status(500).json({success: false, error: (err as Error).message})
-	}
+	// catch(err) {
+		// res.status(500).json({success: false, error: (err as Error).message})
+	// }
 	
 	
 	
 }
 
 
-export let updateHelperById = async (req: Request, res: Response) => {
+export let updateHelperById = async (req: Request, res: Response, next: NextFunction) => {
 
 	// throw new Error("This is a thrown error for testing")
 	
 	let _id = req.params["_id"]
 	
-	try {
+	// try {
 		
 		let data = await HelperModel.findByIdAndUpdate(_id, (req.body as Helper), {new: true})
 		
@@ -240,16 +236,16 @@ export let updateHelperById = async (req: Request, res: Response) => {
 		}
 		res.status(404).json({success: true, error: "Helper does not exist for updation"})
 		
-	}
+	// }
 	
-	catch(err) {
-		res.status(500).json({success: false, error: (err as Error).message})
-	}
+	// catch(err) {
+		// res.status(500).json({success: false, error: (err as Error).message})
+	// }
 	
 
 }
 
-export let uploadProfilePic = async (req: Request, res: Response) => {
+export let uploadProfilePic = async (req: Request, res: Response, next: NextFunction) => {
 
 	let file = req.file
 	
@@ -265,7 +261,7 @@ export let uploadProfilePicMiddleware = uploadProfilePics.single('profilePic');
 
 
 
-export let uploadKYCDoc = async (req: Request, res: Response) => {
+export let uploadKYCDoc = async (req: Request, res: Response, next: NextFunction) => {
 
 	let file = req.file
 	
@@ -279,7 +275,7 @@ export let uploadKYCDoc = async (req: Request, res: Response) => {
 export let uploadKYCDocMiddleware = uploadKyc.single('kycDoc');
 
 
-export let uploadAdditionalDoc = async (req: Request, res: Response) => {
+export let uploadAdditionalDoc = async (req: Request, res: Response, next: NextFunction) => {
 
 	let file = req.file
 	
@@ -294,9 +290,9 @@ export let uploadAdditionalDoc = async (req: Request, res: Response) => {
 export let uploadAdditionalDocMiddleware = uploadAdditional.single('additionalDoc');
 
 
-export let downloadHelpers = async (req: Request, res: Response) => {
+export let downloadHelpers = async (req: Request, res: Response, next: NextFunction) => {
 
-	try {
+	// try {
 		
 		let data = await HelperModel.find({}).lean()
 
@@ -324,17 +320,17 @@ export let downloadHelpers = async (req: Request, res: Response) => {
 		res.setHeader('Content-Type', 'text/csv')
 		res.setHeader('Content-Disposition', 'attachment; filename="helpers.csv"')
 		res.status(200).send(csv)
-	}
+	// }
 
-	catch(err) {
-		res.status(500).json({success: false, error: (err as Error).message})
-	}
+	// catch(err) {
+		// res.status(500).json({success: false, error: (err as Error).message})
+	// }
 
 }
 
 
 
-export let getHelpersPaginated = async (req: Request, res: Response) => {
+export let getHelpersPaginated = async (req: Request, res: Response, next: NextFunction) => {
 
 	let {search, filterByJob, sortBy, isAscending, page, limit} = req.query
 

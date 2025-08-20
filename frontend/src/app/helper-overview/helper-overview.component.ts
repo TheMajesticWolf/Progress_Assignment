@@ -7,12 +7,13 @@ import { FormsModule } from '@angular/forms';
 import { HelperService } from '../services/helper.service';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { PaginationParams } from '../interfaces/paginationParams.interface';
+import { MatIcon } from '@angular/material/icon';
 
 
 @Component({
 	selector: 'app-helper-overview',
 	standalone: true,
-	imports: [HelperCardComponent, HelperDetailedViewComponent, RouterModule, FormsModule, AsyncPipe, JsonPipe],
+	imports: [HelperCardComponent, HelperDetailedViewComponent, RouterModule, FormsModule, AsyncPipe, JsonPipe, MatIcon],
 	templateUrl: './helper-overview.component.html',
 	styleUrl: './helper-overview.component.css'
 })
@@ -29,17 +30,18 @@ export class HelperOverviewComponent {
 	filterByJob = "all"
 
 	page = 1
-	limit = 5
+	limit = 10
 
 	helpers$ = this.helperService.helpers$
 
 	typeOfService = TypeOfService
 
-	originalLen!: number
+	hasMoreData = true
 
 	
 	onFilterChange() {
-		this.loadHelpers()
+		this.resetPagination()
+		this.loadHelpers(false)
 	}
 
 	constructor(private helperService: HelperService) {
@@ -50,20 +52,17 @@ export class HelperOverviewComponent {
 
 		this.helpers$.subscribe((data) => {
 
-			if(!this.selectedHelper) {
-				this.originalLen = data.length
-			}
-
 			if(data.length > 0) {
 				this.selectedHelper = data[0]
 			}
 		})
 		
-		this.loadHelpers()
+		this.resetPagination()
+		this.loadHelpers(false)
 
 	}
 
-	loadHelpers(isFresh = true) {
+	loadHelpers(toAppend: boolean) {
 		
 		let params: PaginationParams = {
 			page: this.page,
@@ -75,7 +74,11 @@ export class HelperOverviewComponent {
 		}
 
 		console.log(`Fetching using params = ${JSON.stringify(params)}`)
-		this.helperService.getHelpersPaginated(params).subscribe()
+		this.helperService.getHelpersPaginated(params, toAppend).subscribe((newData) => {
+			if(newData.length < this.limit) {
+				this.hasMoreData = false
+			}
+		})
 	}
 
 
@@ -85,12 +88,14 @@ export class HelperOverviewComponent {
 	}
 
 	sortHelpers() {
-		this.loadHelpers()
+		this.resetPagination()
+		this.loadHelpers(false)
 	}
 
 	filterHelpers() {
 		let filterString = this.searchText.trim().toLowerCase()
-		this.loadHelpers()
+		this.resetPagination()
+		this.loadHelpers(false)
 	}
 
 	downloadHelpers() {
@@ -120,8 +125,32 @@ export class HelperOverviewComponent {
 
 	reverseList() {
 		this.isAscending = !this.isAscending
-		this.loadHelpers()
+		this.resetPagination()
+		this.loadHelpers(false)
 	}
+
+	onScroll(event: Event) {
+
+		if(!this.hasMoreData) return
+
+		let element = event.target as Element
+		
+		// console.log(`Client height: ${element.clientHeight}, Scroll top: ${element.scrollTop}, Scroll Height: ${element.scrollHeight}`)
+
+		let diff = element.clientHeight + element.scrollTop - (element.scrollHeight - 100)
+
+		if(diff >= 0) {
+			this.page++
+			this.loadHelpers(true)
+		}
+	}
+
+	resetPagination() {
+		this.page = 1
+		this.hasMoreData = true
+	}
+		
+		
 }
 
 

@@ -117,12 +117,12 @@ export class HelperService {
 	}
 
 	downloadHelpers() {
-		return this.http.get(`${this.BACKEND}/paginated`, {
+		return this.http.get(`${this.BACKEND}/helpers/download`, {
 			responseType: "blob"
 		})
 	}
 
-	getHelpersPaginated(queryParams: PaginationParams): Observable<Helper[]> {
+	getHelpersPaginated(queryParams: PaginationParams, toAppend: boolean): Observable<Helper[]> {
 
 		let params = new HttpParams()
 		params = (queryParams.search && params.append("search", queryParams.search)) || params
@@ -137,7 +137,16 @@ export class HelperService {
 		})
 			.pipe(
 				map(response => {return response.data}),
-				tap(helpers => this.helpersSubject.next(helpers))
+				tap(helpers => {
+					// this.helpersSubject.next(helpers)
+					let initial = this.helpersSubject.value
+					if(toAppend) {
+						this.helpersSubject.next([...initial, ...helpers])
+					}
+					else {
+						this.helpersSubject.next(helpers)
+					}
+				})
 			)
 	}
 }

@@ -27,8 +27,8 @@
 
 			<button (click)="reverseList()">Sort in {{isAscending ? "Descending" : "Ascending"}}</button>
 	
-			<input type="number" placeholder="Page" (input)="filterHelpers()" [(ngModel)]="page" min="1">
-			<input type="number" placeholder="Limit" (input)="filterHelpers()" [(ngModel)]="limit" min="1">
+			<!-- <input type="number" placeholder="Page" (input)="filterHelpers()" [(ngModel)]="page" min="1">
+			<input type="number" placeholder="Limit" (input)="filterHelpers()" [(ngModel)]="limit" min="1"> -->
 			
 			@if(helpers$ | async; as helpers) {
 				<span>{{helpers.length}} helpers</span>
@@ -52,7 +52,7 @@
 			
 			<div class="main-box">
 
-				<div class="helpers-list-box">
+				<div class="helpers-list-box" (scroll)="onScroll($event)">
 
 					<div class="filter-box">
 						<input type="text" placeholder="Name, Employee Id, Phone" (input)="filterHelpers()" [(ngModel)]="searchText">

@@ -21,8 +21,8 @@
 		</div>
 
 		<div class="buttons-box">
-			<button [routerLink]="['/dashboard', 'staff-management', 'helpers', 'edit-helper', helper._id]">Edit</button>
-			<button (click)="handleDelete(helper._id)">Delete</button>
+			<button class="centre-all" [routerLink]="['/dashboard', 'staff-management', 'helpers', 'edit-helper', helper._id]"><mat-icon>edit</mat-icon></button>
+			<button class="centre-all" (click)="handleDelete(helper._id)"><mat-icon>delete</mat-icon></button>
 		</div>
 
 	</div>

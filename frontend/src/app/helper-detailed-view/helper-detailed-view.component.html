@@ -32,7 +32,7 @@
 		<div class="row">
 			<p><b>Identitification Card</b></p>
 			<!-- <p>{{helper.identificationCard || "Unassigned"}}</p> -->
-			<p mat-icon-button (click)="showQr()" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">View <mat-icon>visibility</mat-icon></p>
+			<p mat-icon-button (click)="showQr()" class="preview-link" style="color: blue; text-decoration: underline;">View <mat-icon>visibility</mat-icon></p>
 		</div>
 		<div class="row">
 			<p><b>Employee Code</b></p>
@@ -63,14 +63,14 @@
 		}
 		<div class="row">
 			<p><b>KYC Document</b></p>
-			<p mat-icon-button (click)="showKycDoc()" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">{{helper.kycDetails.documentType}} <mat-icon>visibility</mat-icon></p>
+			<p mat-icon-button><a [href]="BACKEND + helper.kycDetails.document" target="_blank" class="preview-link">{{helper.kycDetails.documentType}}<mat-icon>visibility</mat-icon></a></p>
 		</div>
 
 		<!-- <p>Here '{{helper.additionalDocs | json}}' {{helper.additionalDocs?.length}}</p> -->
 		@if(helper && helper.additionalDocs && helper.additionalDocs.length != 0) {
 			<div class="row">
 				<p><b>Additional Document(s)</b></p>
-				<p mat-icon-button (click)="showAdditionalDoc(helper.additionalDocs)" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">Document<mat-icon>visibility</mat-icon></p>
+				<p mat-icon-button><a [href]="BACKEND + helper.additionalDocs" target="_blank" class="preview-link">Document<mat-icon>visibility</mat-icon></a></p>
 			</div>
 		}
 		

@@ -5,6 +5,7 @@ import { HelperAddFormComponent } from './helper-add-form/helper-add-form.compon
 import { HelperDetailedViewComponent } from './helper-detailed-view/helper-detailed-view.component';
 import { HelperOverviewComponent } from './helper-overview/helper-overview.component';
 import { HelperEditFormComponent } from './helper-edit-form/helper-edit-form.component';
+import { ErrorPageComponent } from './error-page/error-page.component';
 
 export const routes: Routes = [
 	{path: "dashboard/staff-management/helpers", component: MainpanelComponent, children: [
@@ -13,6 +14,7 @@ export const routes: Routes = [
 		{path: "", component: HelperOverviewComponent}
 	]},
 	// {path: "dashboard/staff-management/helpers/add-helepr", component: HelperAddFormComponent},
+	{path: "error", component: ErrorPageComponent},
 	{path: "not-implemented", component: NotImplementedComponent},
 	{path: "**", component: NotImplementedComponent},
 	

@@ -27,3 +27,9 @@ button {
 	cursor: pointer;
 }
 html, body { height: 100%; }
+
+.centre-all {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}

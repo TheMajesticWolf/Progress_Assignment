@@ -8,6 +8,7 @@ import { HelperService } from '../services/helper.service';
 import { AsyncPipe, JsonPipe } from '@angular/common';
 import { PaginationParams } from '../interfaces/paginationParams.interface';
 import { MatIcon } from '@angular/material/icon';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 
 @Component({
@@ -59,6 +60,14 @@ export class HelperOverviewComponent {
 		
 		this.resetPagination()
 		this.loadHelpers(false)
+
+		this.searchSub.pipe(
+			debounceTime(300),
+			distinctUntilChanged()
+		).subscribe((newVal) => {
+			this.searchText = newVal.toString()
+			this.filterHelpers()
+		})
 
 	}
 
@@ -148,6 +157,14 @@ export class HelperOverviewComponent {
 	resetPagination() {
 		this.page = 1
 		this.hasMoreData = true
+	}
+
+	searchSub = new Subject<String>()
+
+	onSearchTextChange(event: Event) {
+		let val = (event.target as HTMLInputElement).value
+		this.searchSub.next(val)
+
 	}
 		
 		

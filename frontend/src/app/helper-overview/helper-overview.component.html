@@ -55,7 +55,7 @@
 				<div class="helpers-list-box" (scroll)="onScroll($event)">
 
 					<div class="filter-box">
-						<input type="text" placeholder="Name, Employee Id, Phone" (input)="filterHelpers()" [(ngModel)]="searchText">
+						<input type="text" placeholder="Name, Employee Id, Phone" (input)="onSearchTextChange($event)" [(ngModel)]="searchText">
 					</div>
 
 					@for (helper of helpers$ | async; track helpers; let index = $index; let even = $even; let odd = $odd) {

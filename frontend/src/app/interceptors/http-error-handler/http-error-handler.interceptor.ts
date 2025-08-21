@@ -16,7 +16,7 @@ export class HttpErrorHandlerInterceptor implements HttpInterceptor {
 					this.router.navigate(['/error'], {
 						queryParams: {
 							code: error.status,
-							message: error.error.error || error.message,
+							message: error.error.message || error.message,
 							statusText: error.statusText
 						}
 					})

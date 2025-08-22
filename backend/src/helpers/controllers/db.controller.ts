@@ -6,6 +6,7 @@ import path from "path"
 import fs from 'fs'
 import { Parser } from 'json2csv'
 import type { SortOrder } from "mongoose"
+import type { APIResponse } from "../interfaces/response.interface.js"
 
 const uploadsPath = path.resolve('./uploads');
 const profilePicsPath = path.join(uploadsPath, 'profile-pics');
@@ -90,12 +91,12 @@ export let getHelpers = async (req: Request, res: Response, next: NextFunction) 
 	// try {
 		
 		let data = await HelperModel.find({})
-		res.status(200).json({success: true, data})
+		res.status(200).json({success: true, data} as APIResponse)
 		
 	// }
 
 	// catch(err) {
-		// res.status(500).json({success: false, error: (err as Error).message})
+		// res.status(500).json({success: false, error: (err as Error).message} as APIResponse)
 	// }
 
 	
@@ -165,7 +166,7 @@ export let addHelper = async (req: Request, res: Response, next: NextFunction) =
 		
 		let data = await new HelperModel(helper).save()
 		// await HelperModel.findByIdAndDelete(data.id)
-		res.status(201).json({success: true, data})
+		res.status(201).json({success: true, data} as APIResponse)
 		
 	
 
@@ -181,15 +182,15 @@ export let getHelperById = async (req: Request, res: Response, next: NextFunctio
 		let data = await HelperModel.findById(_id, {}, {})
 
 		if(data) {
-			return res.status(200).json({success: true, data})
+			return res.status(200).json({success: true, data} as APIResponse)
 		}
 		
-		res.status(404).json({success: true, error: "Helper does not exist"})
+		res.status(404).json({success: true, error: "Helper does not exist"} as APIResponse)
 		
 	// }
 	
 	// catch(err) {
-		// res.status(500).json({success: false, error: (err as Error).message})
+		// res.status(500).json({success: false, error: (err as Error).message} as APIResponse)
 	// }
 	
 	
@@ -206,14 +207,14 @@ export let deleteHelperById = async (req: Request, res: Response, next: NextFunc
 		let data = await HelperModel.findByIdAndDelete(_id, {})
 		
 		if(data) {
-			return res.status(200).json({success: true, data})
+			return res.status(200).json({success: true, data} as APIResponse)
 		}
-		res.status(404).json({success: true, error: "Helper does not exist for deletion"})
+		res.status(404).json({success: true, error: "Helper does not exist for deletion"} as APIResponse)
 		
 	// }
 	
 	// catch(err) {
-		// res.status(500).json({success: false, error: (err as Error).message})
+		// res.status(500).json({success: false, error: (err as Error).message} as APIResponse)
 	// }
 	
 	
@@ -288,7 +289,7 @@ export let uploadProfilePic = async (req: Request, res: Response, next: NextFunc
 	
 	console.log(req)
 	if(file) {
-		res.status(200).json({success: true, data: `/uploads/profile-pics/${file.filename}`})
+		res.status(200).json({success: true, data: `/uploads/profile-pics/${file.filename}`} as APIResponse)
 	}
 
 }
@@ -304,7 +305,7 @@ export let uploadKYCDoc = async (req: Request, res: Response, next: NextFunction
 	
 	console.log(req)
 	if(file) {
-		res.status(200).json({success: true, data: `/uploads/kyc-docs/${file.filename}`})
+		res.status(200).json({success: true, data: `/uploads/kyc-docs/${file.filename}`} as APIResponse)
 	}
 
 }
@@ -319,7 +320,7 @@ export let uploadAdditionalDoc = async (req: Request, res: Response, next: NextF
 	// console.log(req)
 	if(file) {
 		console.log(file)
-		res.status(200).json({success: true, data: `/uploads/additional-docs/${file.filename}`})
+		res.status(200).json({success: true, data: `/uploads/additional-docs/${file.filename}`} as APIResponse)
 	}
 
 }
@@ -360,7 +361,7 @@ export let downloadHelpers = async (req: Request, res: Response, next: NextFunct
 	// }
 
 	// catch(err) {
-		// res.status(500).json({success: false, error: (err as Error).message})
+		// res.status(500).json({success: false, error: (err as Error).message} as APIResponse)
 	// }
 
 }
@@ -404,7 +405,7 @@ export let getHelpersPaginated = async (req: Request, res: Response, next: NextF
 	.skip(amtToskip)
 	.limit(limitNum)
 
-	res.status(200).json({success: true, len: data.length, data: data})
+	res.status(200).json({success: true, len: data.length, data: data} as APIResponse)
 
 }
 

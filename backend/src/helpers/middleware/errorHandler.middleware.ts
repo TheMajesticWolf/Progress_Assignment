@@ -5,7 +5,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, next: Next
 
 	res.status(500).json({
 		success: false,
-		message: err.message || 'Internal Server Error',
+		message: err.message ? err.message : 'Unknown server Error',
 		fromErrorHandler: true
 	})
 }

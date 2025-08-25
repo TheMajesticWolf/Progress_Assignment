@@ -63,17 +63,17 @@ export class HelperAddFormComponent implements OnInit {
 			step_0: this.formBuilder.group({
 				
 				photoUrl:				["", Validators.required],
-				typeOfService:			[TypeOfService.Driver],
+				typeOfService:			[TypeOfService.Driver, TypeOfService],
 				organisationName:		["", Validators.required],
 				fullName:				["", Validators.required],
 				languages:				this.formBuilder.array([], this.minSelectedLanguages(1)),
 				gender:					[Gender.Male],
 				phone:					["", Validators.required],
-				email:					[""],
+				email:					["", Validators.email],
 				vehicleType:			[VehicleType.None],
 				vehicleNumber:			[""],
 				kycDetails:				this.formBuilder.group({
-					documentType:		[DocumentType.Aadhaar],
+					documentType:		[DocumentType.Aadhaar, DocumentType],
 					document:			["", Validators.required]
 				}),
 

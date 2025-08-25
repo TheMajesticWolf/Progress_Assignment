@@ -145,6 +145,13 @@
 					<div class="row">
 						<h6 class="label-title">Email</h6>
 						<input type="email" placeholder="Email" formControlName="email">
+						@if(helperAddForm.get('step_0.email')?.touched && helperAddForm.get('step_0.email')?.invalid) {	
+							<div class="error-box">
+								@if(helperAddForm.get('step_0.email')?.hasError('email')) {
+									<p>Email is not in a valid format</p>
+								}
+							</div>
+						}	
 					</div>
 
 					<div class="row">

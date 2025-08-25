@@ -7,6 +7,7 @@ import fs from 'fs'
 import { Parser } from 'json2csv'
 import type { SortOrder } from "mongoose"
 import type { APIResponse } from "../interfaces/response.interface.js"
+import { deleteUnReferencedFiles } from "../utils/deleteUnreferencedFiles.js"
 
 const uploadsPath = path.resolve('./uploads');
 const profilePicsPath = path.join(uploadsPath, 'profile-pics');
@@ -205,6 +206,8 @@ export let deleteHelperById = async (req: Request, res: Response, next: NextFunc
 	// try {
 		
 		let data = await HelperModel.findByIdAndDelete(_id, {})
+
+		await deleteUnReferencedFiles()
 		
 		if(data) {
 			return res.status(200).json({success: true, data} as APIResponse)
@@ -277,6 +280,8 @@ export let updateHelperById = async (req: Request, res: Response, next: NextFunc
 
 	
 	const data = await HelperModel.findByIdAndUpdate(_id, updatedHelper, { new: true })
+
+	await deleteUnReferencedFiles()
 
 	res.status(200).json({ success: true, data })
 	

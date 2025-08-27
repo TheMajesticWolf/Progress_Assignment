@@ -1,0 +1,74 @@
+<div class="helper-details">
+
+	<div class="general-info-box">
+
+		<div class="details">
+
+			<div class="photo-box">
+				@if(helper.photoUrl?.length !== 0) {
+					<!-- <img [src]="BACKEND + helper.photoUrl" alt="Logo" width="70px" height="70px"> -->
+					<img [src]="profilePicPreviewUrl" alt="Logo" width="70px" height="70px">
+
+				}
+				@else {
+					<img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="Logo" width="50px" height="50px">
+				}
+			</div>
+	
+			<div class="info-box">
+				<h4>{{helper.fullName}}</h4>
+				<span>{{helper.typeOfService}}</span>
+			</div>
+
+		</div>
+
+	</div>
+	
+	<div class="personal-details-box details-box-util">
+		<h5>PERSONAL DETAILS</h5>
+		<div class="row">
+			<p><b>Gender</b></p>
+			<p>{{helper.gender}}</p>
+		</div>
+		<div class="row">
+			<p><b>Language(s)</b></p>
+			<p>{{helper.languages}}</p>
+		</div>
+		<div class="row">
+			<p><b>Mobile No.</b></p>
+			<p>{{helper.phone}}</p>
+		</div>
+		<div class="row">
+			<p><b>Email ID</b></p>
+			<p>{{helper.email}}</p>
+		</div>
+		<div class="row">
+			<p><b>KYC Document</b></p>
+			<p>{{helper.kycDetails?.documentType}}</p>
+		</div>
+		
+	</div>
+	
+	<div class="service-details-box details-box-util">
+		<h5>SERVICE DETAILS</h5>
+		<div class="row">
+			<p><b>Type</b></p>
+			<p>{{helper.typeOfService}}</p>
+		</div>
+		<div class="row">
+			<p><b>Organisation</b></p>
+			<p>{{helper.organisationName}}</p>
+		</div>
+
+		<!-- {{helper.additionalDocs | json}} -->
+		@if(helper.additionalDocs?.length != 0) {
+			<div class="row">
+				<p><b>Additional Document(s)</b></p>
+					<p mat-icon-button (click)="showAdditionalDoc(helper.additionalDocs)" style="display: flex; align-items: center; gap: 10px; text-decoration: underline; color: blue; cursor: pointer;">Document<mat-icon>visibility</mat-icon></p>
+					<!-- <p>Doc is '{{doc}}'</p> -->
+			</div>
+		}
+
+	</div>
+
+</div>

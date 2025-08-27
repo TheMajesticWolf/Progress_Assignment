@@ -1,0 +1,262 @@
+<div class="container">
+
+	<div class="header-box">
+		<div class="header-title-box">
+			<button [routerLink]="['/dashboard', 'staff-management', 'helpers']">
+				<!-- <span class="material-icons">arrow_back_ios_new</span> -->
+				 Cancel Add
+			</button>
+			<h3>Add Helper</h3>
+		</div>
+	</div>
+
+	<div class="stepper-box">
+		<!-- <p>The value of step is {{step}}</p> -->
+
+		<mat-stepper id="stepper" orientation="vertical" #stepper [(selectedIndex)]="step" (selectionChange)="handleStepperChange($event)">
+			<mat-step>
+				<form>
+					<ng-template matStepLabel>Helper Details</ng-template>
+					<span>Add helper details</span>
+				</form>
+			</mat-step>
+			<mat-step>
+				<form>
+					<ng-template matStepLabel>Documents</ng-template>
+					<span>Upload related documents</span>
+				</form>
+			</mat-step>
+			<mat-step>
+				<ng-template matStepLabel>Review</ng-template>
+				<span>Check the information and confirm</span>
+			</mat-step>
+		</mat-stepper>
+	</div>
+
+
+	<div class="helper-add-form-box">
+
+		<form [formGroup]="helperAddForm" (change)="updateHelper()">
+
+			@if(step == 0) {
+				<div class="step-component" formGroupName="step_0">
+
+					<div class="row hidden-file-input">
+						<input type="file" #photoInput accept="image/*" (change)="onImageFilePick($event)">
+						<div id="upload-photo-button-proxy" (click)="photoInput.click()"
+						    [style]="{'background-image': helperAddForm.value.step_0.photoUrl.length !== 0 ? 'url(' + profilePicPreviewUrl + ')' : 'none'}">
+							<!-- <span class="material-icons md-48">face</span> -->
+							@if(helperAddForm.value.step_0.photoUrl.length != 0) {
+							}
+							@else {
+								<span class="material-icons md-48">cloud_upload</span>
+							}
+						</div>
+						@if(helperAddForm.get('step_0.photoUrl')?.touched && helperAddForm.get('step_0.photoUrl')?.invalid) {	
+							<div class="error-box">
+								@if(helperAddForm.get('step_0.photoUrl')?.hasError('required')) {
+									<p>Photo needs to be uploaded</p>
+								}
+							</div>
+						}						
+					</div>
+
+					<div class="row">
+						<h6 class="label-title">Type of Service*</h6>
+						<select formControlName="typeOfService">
+							<option [value]="typeOfService.Driver">Driver</option>
+							<option [value]="typeOfService.Maid">Maid</option>
+							<option [value]="typeOfService.Cook">Cook</option>
+						</select>
+
+					</div>
+
+					<div class="row">
+						<h6 class="label-title">Organisation Name*</h6>
+						<input type="text" placeholder="Organisation Name" formControlName="organisationName">
+						@if(helperAddForm.get('step_0.organisationName')?.touched && helperAddForm.get('step_0.organisationName')?.invalid) {	
+							<div class="error-box">
+								@if(helperAddForm.get('step_0.organisationName')?.hasError('required')) {
+									<p>Organisation name is required.</p>
+								}
+							</div>
+						}
+
+					</div>
+
+					<div class="row">
+						<h6 class="label-title">Full Name*</h6>
+						<input type="text" placeholder="Full Name" formControlName="fullName">
+						
+						@if(helperAddForm.get('step_0.fullName')?.touched && helperAddForm.get('step_0.fullName')?.invalid) {	
+							<div class="error-box">
+								@if(helperAddForm.get('step_0.fullName')?.hasError('required')) {
+									<p>Full name is required.</p>
+								}
+							</div>
+						}
+
+					</div>
+
+					<div class="row">
+						<h6 class="label-title">Languages*</h6>
+						<select multiple multiselect-search="true" size="2" (change)="onLanguageChange($event)">
+							<option>English</option>
+							<option>Hindi</option>
+							<option>Telugu</option>
+						</select>
+						@if(helperAddForm.get('step_0.languages')?.touched&& helperAddForm.get('step_0.languages')?.hasError('minLanguages')) {
+							<div class="error-box">
+								<p>Minimum one language is required</p>
+							</div>
+						}
+						<p>{{helperAddForm.get('step_0.languages')?.value}}</p>
+					</div>
+
+					<div class="row row-horizontal">
+						<h6 class="label-title">Gender*</h6>
+						<div class="radio-box">
+
+							<div>
+								<label for=""><input type="radio" [value]="gender.Male" formControlName="gender">Male</label>
+							</div>
+							<div>
+								<label for=""><input type="radio" [value]="gender.Female" formControlName="gender">Female</label>
+							</div>
+							<div>
+								<label for=""><input type="radio" [value]="gender.Other" formControlName="gender">Other</label>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="row">
+						<h6 class="label-title">Phone Number*</h6>
+						<input type="text" placeholder="Phone Number" formControlName="phone">
+						@if(helperAddForm.get('step_0.phone')?.touched && helperAddForm.get('step_0.phone')?.invalid) {	
+							<div class="error-box">
+								@if(helperAddForm.get('step_0.phone')?.hasError('required')) {
+									<p>Phone number is required.</p>
+								}
+							</div>
+						}
+					</div>
+
+					<div class="row">
+						<h6 class="label-title">Email</h6>
+						<input type="email" placeholder="Email" formControlName="email">
+						@if(helperAddForm.get('step_0.email')?.touched && helperAddForm.get('step_0.email')?.invalid) {	
+							<div class="error-box">
+								@if(helperAddForm.get('step_0.email')?.hasError('email')) {
+									<p>Email is not in a valid format</p>
+								}
+							</div>
+						}	
+					</div>
+
+					<div class="row">
+						<h6 class="label-title">Choose Vehicle Type</h6>
+						<select formControlName="vehicleType">
+							<option [value]="vehicleType.None">None</option>
+							<option [value]="vehicleType.Auto">Auto</option>
+							<option [value]="vehicleType.Taxi">Taxi</option>
+							<option [value]="vehicleType.Bike">Bike</option>
+						</select>
+					</div>
+
+					@if(!(helperAddForm.get("step_0.vehicleType")?.value === vehicleType.None)) {
+						<div class="row">
+							<h6 class="label-title">Vehicle Number*</h6>
+							<input type="text" placeholder="Vehicle Number" formControlName="vehicleNumber">
+							@if(helperAddForm.get('step_0.vehicleNumber')?.touched && helperAddForm.get('step_0.vehicleNumber')?.invalid) {	
+								<div class="error-box">
+									@if(helperAddForm.get('step_0.vehicleNumber')?.hasError('required')) {
+										<p>Vehicle number is required</p>
+									}
+								</div>
+							}							
+						</div>
+					}
+
+					<div class="row hidden-file-input" formGroupName="kycDetails">
+						<!-- <div id="upload-square-box hidden-file-input"> -->
+							<h5>KYC Upload*</h5>
+							<input type="file" #kycInput (change)="onKYCFilePick($event)">
+							<select formControlName="documentType">
+								<option [value]="documentType.Aadhaar">Aadhaar</option>
+								<option [value]="documentType.License">License</option>
+								<option [value]="documentType.Passport">Passport</option>
+							</select>
+							<div id="upload-kyc-square-box" (click)="kycInput.click()">
+								@if(helperAddForm.get('step_0.kycDetails')?.touched && helperAddForm.get('step_0.kycDetails')?.valid) {	
+									<p style="font-size: 0.55rem; text-align: center;">{{helperAddForm.value.step_0.kycDetails.document}}</p>
+								}
+								@else {
+									+
+								}
+							</div>
+							
+							@if(helper.kycDetails?.document?.length != 0) {		
+								<p mat-icon-button><a [href]="kycDocPreviewUrl" target="_blank" class="preview-link">Document<mat-icon>visibility</mat-icon></a></p>
+								<!-- <p>Doc is '{{doc}}'</p> -->
+							}
+							
+							@if(helperAddForm.get('step_0.kycDetails')?.touched && helperAddForm.get('step_0.kycDetails')?.invalid) {	
+								<div class="error-box">
+									@if(helperAddForm.get('step_0.kycDetails.document')?.hasError('required')) {
+										<p>KYC Document is rquired.</p>
+									}
+								</div>
+							}
+
+						<!-- </div> -->
+
+					</div>
+
+
+				</div>
+			}
+
+			@else if(step == 1) {
+				<div class="step-component">
+					<div class="row hidden-file-input">
+						<h6 class="label-title">Additional Document Upload</h6>
+						<input type="file" #additionalDocs placeholder="Upload additional document(s)" (change)="onAdditionalDocsPick($event)">
+						<div id="upload-kyc-square-box" (click)="additionalDocs.click()">
+							@if(helperAddForm.value.step_1.additionalDocs.length != 0) {	
+								<p style="font-size: 10px; text-align: center;">{{helperAddForm.value.step_1.additionalDocs}}</p>
+							}
+							@else {
+								+
+							}
+						</div>
+					</div>
+				</div>
+			}
+
+			@else if(step == 2) {
+				<div [class]="step == 2 ? 'last-page' : ''" formGroupName="step_1">
+					<h5>Confirm and Submit</h5>
+					<!-- <p>{{helperAddForm.value | json}}</p> -->
+						<app-helper-form-summary [helper]="helper" [profilePicPreviewUrl]="profilePicPreviewUrl"></app-helper-form-summary>
+					<!-- <button type="button" (click)="onSubmit()">Submit</button> -->
+				</div>
+			}
+
+
+			<div class="nav-buttons" [style.justify-content]="step == 2 ? 'center' : ''">
+				
+				<button type="button" (click)="prev()" [disabled]="step == 0">Prev</button>
+				@if(step === 2) {
+					<button type="button" (click)="onSubmit()">Submit</button>
+				}
+				@else {
+					<button type="button" (click)="next()" [disabled]="step == 2">Next</button>
+				}
+			</div>
+
+		</form>
+
+	</div>
+
+</div>

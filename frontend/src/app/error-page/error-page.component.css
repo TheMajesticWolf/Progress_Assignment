@@ -1,0 +1,22 @@
+.error-page {
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	padding: 10px;
+}
+
+.table {
+	width: 50%;
+	text-align: center;
+}
+
+table td,
+table th {
+	padding: 10px;
+}
+
+.table-box {
+	justify-content: center;
+	align-items: center;
+	display: flex;
+}
